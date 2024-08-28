@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Вячеслав Уминов](https://up.htmlacademy.ru/ecmascript/24/user/2465693).
-* Наставник: `Неизвестно`.
+- Студент: [Вячеслав Уминов](https://up.htmlacademy.ru/ecmascript/24/user/2465693).
+- Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/spearance).
 
 ---
 
