@@ -9,8 +9,8 @@ const createFiltersItemTemplate = (type) =>
 
 const createNewFiltersViewTemplate = () =>
   `<form class="trip-filters" action="#" method="get">
-${FILTER_TYPES.map((type) => createFiltersItemTemplate(type)).join('')}
-</form>`;
+     ${FILTER_TYPES.map((type) => createFiltersItemTemplate(type)).join('')}
+   </form>`;
 
 export default class FiltersView {
   getTemplate() {
