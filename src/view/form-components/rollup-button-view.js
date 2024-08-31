@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { createElement } from '../../render.js';
 
 const createNewRollupButtonViewTemplate = () => `
 <button class="event__rollup-btn" type="button">

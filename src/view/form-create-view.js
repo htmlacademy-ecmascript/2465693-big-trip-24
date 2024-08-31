@@ -17,7 +17,7 @@ const createCancelButtonView = new CancelButtonView().getTemplate();
 const createEventOfferView = new EventOfferView().getTemplate();
 const createEventDestinationView = new EventDestinationView().getTemplate();
 
-const createNewFormCreateViewTemplate = () => `
+const createNewFormViewTemplate = () => `
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   ${createEventType};
@@ -37,7 +37,7 @@ const createNewFormCreateViewTemplate = () => `
 
 export default class NewFormCreateView {
   getTemplate() {
-    return createNewFormCreateViewTemplate();
+    return createNewFormViewTemplate();
   }
 
   getElement() {

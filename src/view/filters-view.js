@@ -13,7 +13,7 @@ const createNewFiltersViewTemplate = () =>
      ${FILTER_TYPES.map((type) => createFiltersItemTemplate(type)).join('')}
    </form>`;
 
-export default class FiltersView {
+export default class NewFiltersView {
   getTemplate() {
     return createNewFiltersViewTemplate();
   }
