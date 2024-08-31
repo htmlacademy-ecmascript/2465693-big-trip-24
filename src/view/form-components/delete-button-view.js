@@ -1,9 +1,10 @@
 import { createElement } from '../render.js';
 
-const createNewEventButtonViewTemplate = () => '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>';
-export default class NewEventButtonView {
+const createNewDeleteButtonViewTemplate = () => '<button class="event__reset-btn" type="reset">Delete</button>';
+
+export default class NewDeleteButtonView {
   getTemplate() {
-    return createNewEventButtonViewTemplate();
+    return createNewDeleteButtonViewTemplate();
   }
 
   getElement() {

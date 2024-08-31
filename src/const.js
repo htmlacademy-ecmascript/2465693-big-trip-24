@@ -1,5 +1,9 @@
-const FILTER_TYPES = ['Everything', 'Future', 'Present', 'Past'];
+const FILTER_TYPES = ['everything', 'future', 'present', 'past'];
 
-const SORT_TYPES = ['Day', 'Event', 'Time', 'Price', 'Offers'];
+const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
 
-export { FILTER_TYPES, SORT_TYPES };
+const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
+const DESTINATION_LOCATIONS = ['Amsterdam', 'Geneva', 'Chamonix'];
+
+export { FILTER_TYPES, SORT_TYPES, EVENT_TYPES, DESTINATION_LOCATIONS };

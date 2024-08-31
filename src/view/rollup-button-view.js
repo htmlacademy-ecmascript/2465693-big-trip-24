@@ -1,9 +1,13 @@
 import { createElement } from '../render.js';
 
-const createNewEventButtonViewTemplate = () => '<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>';
-export default class NewEventButtonView {
+const createNewRollupButtonViewTemplate = () => `
+<button class="event__rollup-btn" type="button">
+  <span class="visually-hidden">Open event</span>
+</button>`;
+
+export default class NewRollupButtonView {
   getTemplate() {
-    return createNewEventButtonViewTemplate();
+    return createNewRollupButtonViewTemplate();
   }
 
   getElement() {
