@@ -1,12 +1,12 @@
 import { createElement } from '../render.js';
-import { EventTypeView } from './form-components/event-type-view.js';
-import { DestinationView } from './form-components/destination-view.js';
-import { TimeView } from './form-components/time-view.js';
-import { PriceView } from './form-components/price-view.js';
-import { SaveButtonView } from './form-components/save-button-view.js';
-import { CancelButtonView } from './form-components/cancel-button-view.js';
-import { EventOfferView } from './form-components/event-offer-view.js';
-import { EventDestinationView } from './form-components/event-destination-view.js';
+import EventTypeView from './form-components/event-type-view.js';
+import DestinationView from './form-components/destination-view.js';
+import TimeView from './form-components/time-view.js';
+import PriceView from './form-components/price-view.js';
+import SaveButtonView from './form-components/save-button-view.js';
+import CancelButtonView from './form-components/cancel-button-view.js';
+import EventOfferView from './form-components/event-offer-view.js';
+import EventDestinationView from './form-components/event-destination-view.js';
 
 const createEventType = new EventTypeView().getTemplate();
 const createDestinationView = new DestinationView().getTemplate();
