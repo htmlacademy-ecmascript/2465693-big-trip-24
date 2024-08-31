@@ -10,7 +10,7 @@ const createNewTimeViewTemplate = () => `
 </div>
 `;
 
-export default class NewTimeView {
+export default class TimeView {
   getTemplate() {
     return createNewTimeViewTemplate();
   }

@@ -5,7 +5,7 @@ const createNewRollupButtonViewTemplate = () => `
   <span class="visually-hidden">Open event</span>
 </button>`;
 
-export default class NewRollupButtonView {
+export default class RollupButtonView {
   getTemplate() {
     return createNewRollupButtonViewTemplate();
   }

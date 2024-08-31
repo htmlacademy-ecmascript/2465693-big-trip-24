@@ -35,7 +35,7 @@ const createNewFormViewTemplate = () => `
               </form>
 `;
 
-export default class NewFormCreateView {
+export default class FormCreateView {
   getTemplate() {
     return createNewFormViewTemplate();
   }

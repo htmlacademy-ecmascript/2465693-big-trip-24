@@ -38,7 +38,7 @@ const createNewFormEditViewTemplate = () => `
               </form>
 `;
 
-export default class NewFormEditView {
+export default class FormEditView {
   getTemplate() {
     return createNewFormEditViewTemplate();
   }

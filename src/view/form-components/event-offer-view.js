@@ -54,7 +54,7 @@ const createNewEventOfferViewTemplate = () => `
 </section>
 `;
 
-export default class NewEventOfferView {
+export default class EventOfferView {
   getTemplate() {
     return createNewEventOfferViewTemplate();
   }

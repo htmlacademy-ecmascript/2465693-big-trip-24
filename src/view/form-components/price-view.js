@@ -10,7 +10,7 @@ const createNewPriceViewTemplate = () => `
 </div>
 `;
 
-export default class NewPriceView {
+export default class PriceView {
   getTemplate() {
     return createNewPriceViewTemplate();
   }

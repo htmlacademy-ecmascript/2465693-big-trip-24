@@ -17,7 +17,7 @@ const createNewEventDestinationViewTemplate = () => `
 </section>
 `;
 
-export default class NewEventDestinationView {
+export default class EventDestinationView {
   getTemplate() {
     return createNewEventDestinationViewTemplate();
   }
