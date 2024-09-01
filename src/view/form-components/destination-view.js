@@ -1,5 +1,5 @@
 import { DESTINATION_LOCATIONS } from '../../const.js';
-import { createElement } from '../render.js';
+import { createElement } from '../../render.js';
 
 const createDestinationLocationTemplate = (location) => `
 <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${location}" list="destination-list-1">
@@ -14,8 +14,7 @@ const createNewDestinationViewTemplate = () => `
     Flight
   </label>
   ${DESTINATION_LOCATIONS.map((location) => createDestinationLocationTemplate(location)).join('')}
-</div>
-`;
+</div>`;
 
 export default class DestinationView {
   getTemplate() {

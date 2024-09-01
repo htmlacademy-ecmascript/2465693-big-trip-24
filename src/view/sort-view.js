@@ -1,11 +1,11 @@
 import { SORT_TYPES } from '../const.js';
+import { capitalizeLetter } from '../utils.js';
 import { createElement } from '../render.js';
-import { capitalizeFletter } from '../utils.js';
 
 const createSortItemTemplate = (type) =>
   `<div class="trip-sort__item  trip-sort__item--${type}">
      <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}">
-     <label class="trip-sort__btn" for="sort-${type}">${capitalizeFletter(type)}</label>
+     <label class="trip-sort__btn" for="sort-${type}">${capitalizeLetter(type)}</label>
    </div>`;
 
 const createNewSortViewTemplate = () =>

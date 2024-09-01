@@ -20,20 +20,18 @@ const createEventDestinationView = new EventDestinationView().getTemplate();
 const createNewFormViewTemplate = () => `
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
-                  ${createEventType};
-                  ${createDestinationView};
-                  ${createTimeView};
-                  ${createPriceView};
-                  ${createSaveButtonView};
-                  ${createCancelButtonView};
+                  ${createEventType}
+                  ${createDestinationView}
+                  ${createTimeView}
+                  ${createPriceView}
+                  ${createSaveButtonView}
+                  ${createCancelButtonView}
                 </header>
-
                 <section class="event__details">
-                  ${createEventOfferView};
-                  ${createEventDestinationView};
+                  ${createEventOfferView}
+                  ${createEventDestinationView}
                 </section>
-              </form>
-`;
+              </form>`;
 
 export default class FormCreateView {
   getTemplate() {

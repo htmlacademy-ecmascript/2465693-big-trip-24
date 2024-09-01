@@ -1,11 +1,11 @@
 import { EVENT_TYPES } from '../../const.js';
-import { capitalizeFletter } from '../utils.js';
-import { createElement } from '../render.js';
+import { capitalizeLetter } from '../../utils.js';
+import { createElement } from '../../render.js';
 
 const createEventTypeItemTemplate = (type) => `
 <div class="event__type-item">
   <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-  <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeFletter(type)}</label>
+  <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeLetter(type)}</label>
 </div>
 `;
 
@@ -23,8 +23,7 @@ const createNewEventTypeViewTemplate = () => `
      ${EVENT_TYPES.map((type) => createEventTypeItemTemplate(type)).join('')}
     </fieldset>
   </div>
-</div>
-`;
+</div>`;
 
 export default class EventTypeView {
   getTemplate() {

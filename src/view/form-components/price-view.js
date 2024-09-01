@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { createElement } from '../../render.js';
 
 const createNewPriceViewTemplate = () => `
 <div class="event__field-group  event__field-group--price">
@@ -7,8 +7,7 @@ const createNewPriceViewTemplate = () => `
     &euro;
   </label>
   <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
-</div>
-`;
+</div>`;
 
 export default class PriceView {
   getTemplate() {

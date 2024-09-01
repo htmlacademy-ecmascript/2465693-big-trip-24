@@ -1,6 +1,5 @@
-import { createElement } from '../render.js';
-
-const createNewCancelButtonViewTemplate = () => '<button class="event__reset-btn" type="reset">Delete</button>';
+import { createElement } from '../../render';
+const createNewCancelButtonViewTemplate = () => '<button class="event__reset-btn" type="reset">Cancel</button>';
 
 export default class CancelButtonView {
   getTemplate() {

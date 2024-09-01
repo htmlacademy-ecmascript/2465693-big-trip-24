@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { createElement } from '../../render.js';
 
 const createNewEventDestinationViewTemplate = () => `
 <section class="event__section  event__section--destination">
@@ -14,8 +14,7 @@ const createNewEventDestinationViewTemplate = () => `
       <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
     </div>
   </div>
-</section>
-`;
+</section>`;
 
 export default class EventDestinationView {
   getTemplate() {
