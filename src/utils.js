@@ -1,3 +1,6 @@
+import { TimeConverter } from './const.js';
+import dayjs from 'dayjs';
+
 //Функция возвращающая слово с заглавной буквы
 const capitalizeLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
@@ -49,4 +52,34 @@ const createRandomIdFromRangeGenerator = (min, max) => {
   };
 };
 
-export { capitalizeLetter, getRandomInteger, getRandomArrayElement, getArrayIds, getRandomArrayIdOffers, createRandomIdFromRangeGenerator };
+//офрматирование даты
+const humanizeTaskDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
+
+const getDuration = (dateBegin, dateEnd) => {
+  //вычисляем разницу в минутах
+  const durationInMinutes = dayjs(dateEnd).diff(dateBegin, 'm');
+  //вычисляем число дней
+  const days = Math.floor(durationInMinutes / (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR));
+  //вычисляем часы
+  const hours = Math.floor((durationInMinutes % (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR)) / TimeConverter.MINUTES_IN_HOUR);
+  //вычисляем минуты
+  const minutes = durationInMinutes % TimeConverter.MINUTES_IN_HOUR;
+
+  let durationResult = '';
+
+  if (days > 0) {
+    durationResult += `${days}D `;
+  }
+
+  if (hours > 0) {
+    durationResult += `${hours}H `;
+  }
+
+  if (minutes > 0 || (days === 0 && hours === 0)) {
+    durationResult += `${minutes}M `;
+  }
+
+  return durationResult;
+};
+
+export { capitalizeLetter, getRandomInteger, getRandomArrayElement, getArrayIds, getRandomArrayIdOffers, createRandomIdFromRangeGenerator, humanizeTaskDueDate, getDuration };

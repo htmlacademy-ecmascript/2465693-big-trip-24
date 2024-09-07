@@ -19,7 +19,12 @@ export default class MainPresenter {
     render(new FormCreateView(), this.container, RenderPosition.BEFOREEND);
 
     for (let i = 0; i < this.eventsListPoints.length; i++) {
-      render(new LocationPointView({ eventPoint: this.eventsListPoints[i] }), this.container, RenderPosition.BEFOREEND);
+      const eventPoint = new LocationPointView({
+        eventPoint: this.eventsListPoints[i],
+        destination: this.eventPointModel.getDestinationsById(this.eventsListPoints[i].destination),
+        offers: [...this.eventPointModel.getOffersById(this.eventsListPoints[i].type, this.eventsListPoints[i].offers)],
+      });
+      render(eventPoint, this.container, RenderPosition.BEFOREEND);
     }
   }
 }

@@ -39,17 +39,16 @@ const generateDateFrom = () => {
   return newDateFrom;
 };
 
-const dateFrom = generateDateFrom();
+const dateFrom = generateDateFrom;
 
 const generateDateTo = (dataValue) => {
   const newDateTo = dayjs(dataValue)
-    .add(getRandomInteger(Date.DAY.MIN, Date.DAY.MAX), 'day')
     .add(getRandomInteger(Date.HOUR.MIN, Date.HOUR.MAX), 'hour')
     .add(getRandomInteger(Date.MINUTE.MIN, Date.MINUTE.MAX), 'minute')
     .add(getRandomInteger(Date.SECOND.MIN, Date.SECOND.MAX), 'second');
   return newDateTo;
 };
 
-const dateTo = generateDateTo(dateFrom);
+const dateTo = generateDateTo;
 
 export { dateFrom, dateTo };
