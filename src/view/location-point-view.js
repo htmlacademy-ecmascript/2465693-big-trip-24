@@ -16,7 +16,9 @@ const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
 
   const createEventOffers = offers.map((offer) => createEventOfferTemplate(offer.title, offer.price)).join('');
 
-  return `<div class="event">
+  return `
+  <li class="trip-events__item">
+  <div class="event">
   <time class="event__date" datetime="${dateFrom}">${humanizeTaskDueDate(dateFrom, DateFormat.EVENT_DATE)}</time>
   <div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -46,7 +48,8 @@ const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
   <button class="event__rollup-btn" type="button">
     <span class="visually-hidden">Open event</span>
   </button>
-</div>`;
+</div>
+</li>`;
 };
 export default class LocationPointView {
   constructor({ eventPoint, destination, offers }) {

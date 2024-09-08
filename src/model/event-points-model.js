@@ -23,7 +23,7 @@ export default class EventPointModel {
   getOffersType() {
     const availableOffers = this.getOffers();
     const arrayTypeOffers = [];
-    for (let i = 0; i < availableOffers.length - 1; i++) {
+    for (let i = 0; i < availableOffers.length; i++) {
       arrayTypeOffers.push(availableOffers[i].type);
     }
     return arrayTypeOffers;
