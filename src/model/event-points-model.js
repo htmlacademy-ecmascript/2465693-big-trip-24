@@ -20,6 +20,15 @@ export default class EventPointModel {
     return this.offers;
   }
 
+  getOffersType() {
+    const availableOffers = this.getOffers();
+    const arrayTypeOffers = [];
+    for (let i = 0; i < availableOffers.length - 1; i++) {
+      arrayTypeOffers.push(availableOffers[i].type);
+    }
+    return arrayTypeOffers;
+  }
+
   getDestinationsById(id) {
     const availableDestinations = this.getDestinations();
     return availableDestinations.find((item) => item.id === id);

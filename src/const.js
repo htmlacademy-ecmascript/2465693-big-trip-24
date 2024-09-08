@@ -19,6 +19,7 @@ const TimeConverter = {
 const DateFormat = {
   EVENT_DATE: 'MMM D',
   EVENT_TIME: 'HH:mm',
+  EDIT_DATE: 'DD/MM/YY HH:mm',
 };
 
 export { FILTER_TYPES, SORT_TYPES, EVENT_TYPES, DESTINATION_LOCATIONS, NUMBER_LOCATION_POINTS, OFFER_TITLE, OFFER_SELECTORS, DateFormat, TimeConverter };
