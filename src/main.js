@@ -5,7 +5,7 @@ import EventPointModel from './model/event-points-model.js';
 import OffersModel from './model/offers-model.js';
 import DestinationsModel from './model/destinations-model.js';
 
-import { render } from './render.js';
+import { render } from './framework/render.js';
 
 const filterControlElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');

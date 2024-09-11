@@ -1,5 +1,5 @@
 import { DateFormat } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { capitalizeLetter, humanizeTaskDueDate } from '../utils.js';
 
 const createOfferItemTemplate = (type, title, price, className) => `
@@ -114,28 +114,24 @@ const createNewFormEditViewTemplate = (eventPoint, availableOffers, pointDestina
             </li>`;
 };
 
-export default class FormEditView {
+export default class FormEditView extends AbstractView {
+  #eventPoint = null;
+  #availableOffers = null;
+  #pointDestination = null;
+  #destination = null;
+  #arrayTypeOffers = null;
+
   constructor({ eventPoint, availableOffers, pointDestination, destination, arrayTypeOffers }) {
-    this.eventPoint = eventPoint;
-    this.availableOffers = availableOffers;
-    this.pointDestination = pointDestination;
-    this.destination = destination;
-    this.arrayTypeOffers = arrayTypeOffers;
+    /**super вызывает конструктор родительского класса*/
+    super();
+    this.#eventPoint = eventPoint;
+    this.#availableOffers = availableOffers;
+    this.#pointDestination = pointDestination;
+    this.#destination = destination;
+    this.#arrayTypeOffers = arrayTypeOffers;
   }
 
-  getTemplate() {
-    return createNewFormEditViewTemplate(this.eventPoint, this.availableOffers, this.pointDestination, this.destination, this.arrayTypeOffers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createNewFormEditViewTemplate(this.#eventPoint, this.#availableOffers, this.#pointDestination, this.#destination, this.#arrayTypeOffers);
   }
 }
