@@ -15,8 +15,6 @@ export default class MainPresenter {
   #destinationsModel = null;
 
   #eventListPoints = [];
-  #offers = [];
-  #destinations = [];
 
   constructor({ container, eventPointModel, offersModel, destinationsModel }) {
     this.#container = container;
@@ -27,8 +25,6 @@ export default class MainPresenter {
 
   init() {
     this.#eventListPoints = [...this.#eventPointModel.eventPoint];
-    this.#offers = [...this.#offersModel.offers];
-    this.#destinations = [...this.#destinationsModel.destinations];
 
     const editEventPoint = getRandomArrayElement(this.#eventListPoints);
     const formEditView = new FormEditView({
@@ -45,12 +41,19 @@ export default class MainPresenter {
     render(formEditView, this.#eventList.element);
 
     for (let i = 0; i < this.#eventListPoints.length; i++) {
-      const eventPoint = new LocationPointView({
-        eventPoint: this.#eventListPoints[i],
-        destination: this.#destinationsModel.getDestinationsById(this.#eventListPoints[i].destination),
-        offers: [...this.#offersModel.getOffersById(this.#eventListPoints[i].type, this.#eventListPoints[i].offers)],
-      });
-      render(eventPoint, this.#eventList.element);
+      this.#renderEventPoint(this.#eventListPoints[i]);
     }
+  }
+
+  /**приватный метод для отрисовки точки события,
+   * принимает объект точки события
+   */
+  #renderEventPoint(eventPointItem) {
+    const eventPoint = new LocationPointView({
+      eventPoint: eventPointItem,
+      destination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
+      offers: [...this.#offersModel.getOffersById(eventPointItem.type, eventPointItem.offers)],
+    });
+    render(eventPoint, this.#eventList.element);
   }
 }
