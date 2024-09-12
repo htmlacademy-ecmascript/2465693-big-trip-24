@@ -55,15 +55,25 @@ export default class LocationPointView extends AbstractView {
   #eventPoint = null;
   #destination = null;
   #offers = null;
-  constructor({ eventPoint, destination, offers }) {
+  #handleEditButtonClick = null;
+  constructor({ eventPoint, destination, offers, onEditButtonClick }) {
     /**super вызывает конструктор родительского класса*/
     super();
     this.#eventPoint = eventPoint;
     this.#destination = destination;
     this.#offers = offers;
+    /**сохраняем ссылку которую мы получаем в onEditButtonClick */
+    this.#handleEditButtonClick = onEditButtonClick;
+    /**ссылка на элемент event-point */
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#EditButtonClickHandler);
   }
 
   get template() {
     return createNewLocationPointTemplate(this.#eventPoint, this.#destination, this.#offers);
   }
+
+  #EditButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditButtonClick();
+  };
 }
