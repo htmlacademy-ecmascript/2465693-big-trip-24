@@ -2,6 +2,7 @@ import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
+import { isEscapeKey } from '../utils.js';
 
 import { render, RenderPosition, replace } from '../framework/render.js';
 
@@ -23,13 +24,7 @@ export default class MainPresenter {
 
   init() {
     this.#eventListPoints = [...this.#eventPointModel.eventPoint];
-
-    render(new SortView(), this.#container, RenderPosition.BEFOREEND);
-    render(this.#eventList, this.#container);
-
-    for (let i = 0; i < this.#eventListPoints.length; i++) {
-      this.#renderEventPoint(this.#eventListPoints[i]);
-    }
+    this.#renderEventList();
   }
 
   /**приватный метод для отрисовки точки события,
@@ -55,7 +50,7 @@ export default class MainPresenter {
     });
 
     const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
+      if (isEscapeKey(evt)) {
         evt.preventDefault();
         replaceEditToView();
         document.removeEventListener('keydown', escKeyDownHandler);
@@ -82,5 +77,14 @@ export default class MainPresenter {
     }
 
     render(eventPoint, this.#eventList.element);
+  }
+
+  #renderEventList() {
+    render(new SortView(), this.#container, RenderPosition.BEFOREEND);
+    render(this.#eventList, this.#container);
+
+    for (let i = 0; i < this.#eventListPoints.length; i++) {
+      this.#renderEventPoint(this.#eventListPoints[i]);
+    }
   }
 }

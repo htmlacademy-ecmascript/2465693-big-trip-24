@@ -82,4 +82,16 @@ const getDuration = (dateBegin, dateEnd) => {
   return durationResult;
 };
 
-export { capitalizeLetter, getRandomInteger, getRandomArrayElement, getArrayIds, getRandomArrayIdOffers, createRandomIdFromRangeGenerator, humanizeTaskDueDate, getDuration };
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {
+  capitalizeLetter,
+  getRandomInteger,
+  getRandomArrayElement,
+  getArrayIds,
+  getRandomArrayIdOffers,
+  createRandomIdFromRangeGenerator,
+  humanizeTaskDueDate,
+  getDuration,
+  isEscapeKey,
+};
