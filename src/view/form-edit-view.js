@@ -1,5 +1,5 @@
 import { DateFormat } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { capitalizeLetter, humanizeTaskDueDate } from '../utils.js';
 
 const createOfferItemTemplate = (type, title, price, className) => `
@@ -114,28 +114,41 @@ const createNewFormEditViewTemplate = (eventPoint, availableOffers, pointDestina
             </li>`;
 };
 
-export default class FormEditView {
-  constructor({ eventPoint, availableOffers, pointDestination, destination, arrayTypeOffers }) {
-    this.eventPoint = eventPoint;
-    this.availableOffers = availableOffers;
-    this.pointDestination = pointDestination;
-    this.destination = destination;
-    this.arrayTypeOffers = arrayTypeOffers;
+export default class FormEditView extends AbstractView {
+  #eventPoint = null;
+  #availableOffers = null;
+  #pointDestination = null;
+  #destination = null;
+  #arrayTypeOffers = null;
+  #handleFormSubmit = null;
+  #handleRollupButtonClick = null;
+
+  constructor({ eventPoint, availableOffers, pointDestination, destination, arrayTypeOffers, onFormSubmit, onRollupButtonClick }) {
+    /**super вызывает конструктор родительского класса*/
+    super();
+    this.#eventPoint = eventPoint;
+    this.#availableOffers = availableOffers;
+    this.#pointDestination = pointDestination;
+    this.#destination = destination;
+    this.#arrayTypeOffers = arrayTypeOffers;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleRollupButtonClick = onRollupButtonClick;
+
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupButtonClickHandler);
   }
 
-  getTemplate() {
-    return createNewFormEditViewTemplate(this.eventPoint, this.availableOffers, this.pointDestination, this.destination, this.arrayTypeOffers);
+  get template() {
+    return createNewFormEditViewTemplate(this.#eventPoint, this.#availableOffers, this.#pointDestination, this.#destination, this.#arrayTypeOffers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #rollupButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleRollupButtonClick();
+  };
 }

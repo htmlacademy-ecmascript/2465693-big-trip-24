@@ -1,5 +1,5 @@
 import { DateFormat } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeTaskDueDate, getDuration } from '../utils.js';
 
 const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
@@ -51,26 +51,29 @@ const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
 </div>
 </li>`;
 };
-export default class LocationPointView {
-  constructor({ eventPoint, destination, offers }) {
-    this.eventPoint = eventPoint;
-    this.destination = destination;
-    this.offers = offers;
+export default class LocationPointView extends AbstractView {
+  #eventPoint = null;
+  #destination = null;
+  #offers = null;
+  #handleEditButtonClick = null;
+  constructor({ eventPoint, destination, offers, onEditButtonClick }) {
+    /**super вызывает конструктор родительского класса*/
+    super();
+    this.#eventPoint = eventPoint;
+    this.#destination = destination;
+    this.#offers = offers;
+    /**сохраняем ссылку которую мы получаем в onEditButtonClick */
+    this.#handleEditButtonClick = onEditButtonClick;
+    /**ссылка на элемент event-point */
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#EditButtonClickHandler);
   }
 
-  getTemplate() {
-    return createNewLocationPointTemplate(this.eventPoint, this.destination, this.offers);
+  get template() {
+    return createNewLocationPointTemplate(this.#eventPoint, this.#destination, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #EditButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditButtonClick();
+  };
 }

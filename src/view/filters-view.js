@@ -1,6 +1,6 @@
 import { FILTER_TYPES } from '../const.js';
 import { capitalizeLetter } from '../utils.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createFiltersItemTemplate = (type) =>
   `<div class="trip-filters__filter">
@@ -13,20 +13,8 @@ const createNewFiltersViewTemplate = () =>
      ${FILTER_TYPES.map((type) => createFiltersItemTemplate(type)).join('')}
    </form>`;
 
-export default class FiltersView {
-  getTemplate() {
+export default class FiltersView extends AbstractView {
+  get template() {
     return createNewFiltersViewTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
