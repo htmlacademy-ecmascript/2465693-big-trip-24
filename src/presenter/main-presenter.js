@@ -46,6 +46,7 @@ export default class MainPresenter {
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       destination: this.#destinationsModel.destinations,
       arrayTypeOffers: this.#offersModel.getOffersType(),
+      onFormSubmit,
       onRollupButtonClick,
     });
 
@@ -67,6 +68,11 @@ export default class MainPresenter {
     }
 
     function onRollupButtonClick() {
+      replaceEditToView();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    }
+
+    function onFormSubmit() {
       replaceEditToView();
       document.removeEventListener('keydown', escKeyDownHandler);
     }
