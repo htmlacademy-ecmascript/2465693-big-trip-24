@@ -1,7 +1,9 @@
+import { MessageText } from '../const.js';
 import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
+import MessageView from '../view/message-view.js';
 import { isEscapeKey } from '../utils.js';
 
 import { render, RenderPosition, replace } from '../framework/render.js';
@@ -9,28 +11,26 @@ import { render, RenderPosition, replace } from '../framework/render.js';
 export default class MainPresenter {
   #eventList = new EventListView();
   #container = null;
-  #eventPointModel = null;
+  #eventPointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
 
   #eventListPoints = [];
 
-  constructor({ container, eventPointModel, offersModel, destinationsModel }) {
+  constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
     this.#container = container;
-    this.#eventPointModel = eventPointModel;
+    this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
   }
 
   init() {
-    this.#eventListPoints = [...this.#eventPointModel.eventPoint];
+    this.#eventListPoints = [...this.#eventPointsModel.eventPoints];
     this.#renderEventList();
   }
 
-  /**приватный метод для отрисовки точки события,
-   * принимает объект точки события
-   */
-  #renderEventPoint(eventPointItem) {
+  /**приватный метод для отрисовки точки события, принимает объект точки события*/
+  #renderEventPoints(eventPointItem) {
     /**создание точки */
     const eventPoint = new LocationPointView({
       eventPoint: eventPointItem,
@@ -39,7 +39,7 @@ export default class MainPresenter {
       onEditButtonClick,
     });
 
-    /**слздание формы редактирования */
+    /**создание формы редактирования */
     const editEventPoint = new FormEditView({
       eventPoint: eventPointItem,
       availableOffers: this.#offersModel.getOffersByType(eventPointItem.type),
@@ -86,11 +86,17 @@ export default class MainPresenter {
   }
 
   #renderEventList() {
+    //проверяем, если событий нет, то выводим сообщение
+    if (!this.#eventListPoints.length) {
+      render(new MessageView({ message: MessageText.EVERYTHING }), this.#container);
+      return;
+    }
+
     render(new SortView(), this.#container, RenderPosition.BEFOREEND);
     render(this.#eventList, this.#container);
 
     for (let i = 0; i < this.#eventListPoints.length; i++) {
-      this.#renderEventPoint(this.#eventListPoints[i]);
+      this.#renderEventPoints(this.#eventListPoints[i]);
     }
   }
 }
