@@ -114,6 +114,12 @@ const filter = {
   [FilterType.PAST]: (eventPoints) => eventPoints.filter((eventPoint) => isPastDate(eventPoint.dateTo)),
 };
 
+//заменяет пробелы на тире в offers для id формы редактирования
+const replaceSpaceInName = (string) => {
+  const relaceSymbol = / /g;
+  return string.replace(relaceSymbol, '-');
+};
+
 export {
   capitalizeLetter,
   getRandomInteger,
@@ -125,4 +131,5 @@ export {
   getDuration,
   isEscapeKey,
   filter,
+  replaceSpaceInName,
 };
