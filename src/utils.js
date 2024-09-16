@@ -116,7 +116,7 @@ const filter = {
 
 //заменяет пробелы на тире в offers для id формы редактирования
 const replaceSpaceInName = (string) => {
-  const relaceSymbol = / /g;
+  const relaceSymbol = /\s+/g;
   return string.replace(relaceSymbol, '-');
 };
 
