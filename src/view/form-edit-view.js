@@ -1,11 +1,11 @@
 import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { capitalizeLetter, humanizeTaskDueDate } from '../utils.js';
+import { capitalizeLetter, humanizeTaskDueDate, replaceSpaceInName } from '../utils.js';
 
 const createOfferItemTemplate = (type, title, price, className) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${className}>
-    <label class="event__offer-label" for="event-offer-${type}-1">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceSpaceInName(title)}-1" type="checkbox" name="event-offer-${type}" ${className}>
+    <label class="event__offer-label" for="event-offer-${replaceSpaceInName(title)}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${price}</span>

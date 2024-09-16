@@ -1,5 +1,6 @@
 import { TimeConverter } from './const.js';
 import dayjs from 'dayjs';
+import { FilterType } from './const.js';
 
 //Функция возвращающая слово с заглавной буквы
 const capitalizeLetter = (word) => word[0].toUpperCase() + word.slice(1);
@@ -82,7 +83,42 @@ const getDuration = (dateBegin, dateEnd) => {
   return durationResult;
 };
 
+//нажата ли кнопка Esc
 const isEscapeKey = (evt) => evt.key === 'Escape';
+
+//является прошедшей датой
+const isPastDate = (dueDate) => {
+  const currentDate = dayjs();
+  const targetDate = dayjs(dueDate);
+  return targetDate.isBefore(currentDate);
+};
+
+//является текущей датой
+const isPresentDate = (dueDate) => {
+  const currentDate = dayjs();
+  const targetDate = dayjs(dueDate);
+  return targetDate.isSame(currentDate, 'day');
+};
+
+//является будующей датой
+const isFutureDate = (dueDate) => {
+  const currentDate = dayjs();
+  const targetDate = dayjs(dueDate);
+  return targetDate.isAfter(currentDate);
+};
+
+const filter = {
+  [FilterType.EVERYTHING]: (eventPoints) => eventPoints,
+  [FilterType.FUTURE]: (eventPoints) => eventPoints.filter((eventPoint) => isFutureDate(eventPoint.dateTo)),
+  [FilterType.PRESENT]: (eventPoints) => eventPoints.filter((eventPoint) => isPresentDate(eventPoint.dateTo)),
+  [FilterType.PAST]: (eventPoints) => eventPoints.filter((eventPoint) => isPastDate(eventPoint.dateTo)),
+};
+
+//заменяет пробелы на тире в offers для id формы редактирования
+const replaceSpaceInName = (string) => {
+  const relaceSymbol = / /g;
+  return string.replace(relaceSymbol, '-');
+};
 
 export {
   capitalizeLetter,
@@ -94,4 +130,6 @@ export {
   humanizeTaskDueDate,
   getDuration,
   isEscapeKey,
+  filter,
+  replaceSpaceInName,
 };
