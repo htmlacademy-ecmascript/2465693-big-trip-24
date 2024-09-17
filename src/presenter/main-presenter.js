@@ -14,6 +14,8 @@ export default class MainPresenter {
   #eventPointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #sortComponent = new SortView();
+  #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
 
   #eventListPoints = [];
 
@@ -26,7 +28,17 @@ export default class MainPresenter {
 
   init() {
     this.#eventListPoints = [...this.#eventPointsModel.eventPoints];
-    this.#renderEventList();
+    this.#renderEventsList();
+  }
+
+  /**приватный метод для отрисовки компонентов сортировки */
+  #renderSort() {
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
+  }
+
+  /**приватный метод для отрисовки сообщения на странице */
+  #renderMessage() {
+    render(this.#messageComponent, this.#container);
   }
 
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
@@ -62,22 +74,23 @@ export default class MainPresenter {
       replaceViewToEdit();
       document.addEventListener('keydown', escKeyDownHandler);
     }
-    /**вызов функции replace framework'a , по замене точки на форму редактирования*/
+    /**функция replace framework'a , по замене точки на форму редактирования*/
     function replaceViewToEdit() {
       replace(editEventPoint, eventPoint);
     }
-
+    /**функция по замене формы редактирования на точку */
     function onRollupButtonClick() {
       replaceEditToView();
       document.removeEventListener('keydown', escKeyDownHandler);
     }
 
+    /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
     function onFormSubmit() {
       replaceEditToView();
       document.removeEventListener('keydown', escKeyDownHandler);
     }
 
-    /**вызов функции replace framework'a , по замене формы редактирования на просмотр точки */
+    /**функция replace framework'a , по замене формы редактирования на просмотр точки */
     function replaceEditToView() {
       replace(eventPoint, editEventPoint);
     }
@@ -85,15 +98,16 @@ export default class MainPresenter {
     render(eventPoint, this.#eventList.element);
   }
 
-  #renderEventList() {
+  /**приватный метод для отрисовки списка событий */
+  #renderEventsList() {
+    render(this.#eventList, this.#container);
+    this.#renderSort();
+
     //проверяем, если событий нет, то выводим сообщение
     if (!this.#eventListPoints.length) {
-      render(new MessageView({ message: MessageText.EVERYTHING }), this.#container);
+      this.#renderMessage();
       return;
     }
-
-    render(new SortView(), this.#container, RenderPosition.BEFOREEND);
-    render(this.#eventList, this.#container);
 
     for (let i = 0; i < this.#eventListPoints.length; i++) {
       this.#renderEventPoints(this.#eventListPoints[i]);
