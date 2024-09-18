@@ -39,20 +39,6 @@ const getRandomArrayIdOffers = (currentArrayIdOffers) => {
   return resultOffers;
 };
 
-//генерация уникального id
-const createRandomIdFromRangeGenerator = (min, max) => {
-  const previousValues = [];
-
-  return function () {
-    let currentValue = getRandomInteger(min, max);
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(min, max);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
-  };
-};
-
 //офрматирование даты
 const humanizeTaskDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
@@ -126,7 +112,6 @@ export {
   getRandomArrayElement,
   getArrayIds,
   getRandomArrayIdOffers,
-  createRandomIdFromRangeGenerator,
   humanizeTaskDueDate,
   getDuration,
   isEscapeKey,

@@ -1,11 +1,9 @@
-import { getRandomInteger, getRandomArrayElement, getArrayIds, getRandomArrayIdOffers, createRandomIdFromRangeGenerator } from '../utils.js';
+import { getRandomInteger, getRandomArrayElement, getArrayIds, getRandomArrayIdOffers } from '../utils.js';
 import { arrayOffers } from './offers.js';
 import { arrayDestinations } from './destinations.js';
-import { PricePoint, MAX_ID_COUNT } from './const-mock.js';
+import { PricePoint } from './const-mock.js';
 import { dateFrom, dateTo } from './date.js';
-
-//генерация случайного уникального id event
-const idEvent = createRandomIdFromRangeGenerator(0, MAX_ID_COUNT);
+import { nanoid } from 'nanoid';
 
 const getRandomEventPoint = () => {
   //случайный индекс элемента массива с моковыми данными Offers
@@ -15,7 +13,7 @@ const getRandomEventPoint = () => {
   const startDate = dateFrom();
 
   return {
-    id: idEvent(),
+    id: nanoid(),
     basePrice: getRandomInteger(PricePoint.MIN, PricePoint.MAX),
     dateFrom: startDate,
     dateTo: dateTo(startDate),

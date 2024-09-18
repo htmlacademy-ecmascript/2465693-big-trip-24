@@ -16,6 +16,7 @@ export default class MainPresenter {
   #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
 
   #eventListPoints = [];
+  #eventPresenters = new Map();
 
   constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
     this.#container = container;
@@ -39,8 +40,14 @@ export default class MainPresenter {
     render(this.#messageComponent, this.#container);
   }
 
+  /**приватный метод для очистки точек событий */
+  #clearEventPoints() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
-  #renderEventPoints(eventPointItem) {
+  #renderEventPoint(eventPointItem) {
     const eventPresenter = new EventPresenter({
       container: this.#eventList.element,
       eventPointsModel: this.#eventPointsModel,
@@ -48,6 +55,7 @@ export default class MainPresenter {
       destinationsModel: this.#destinationsModel,
     });
     eventPresenter.init(eventPointItem);
+    this.#eventPresenters.set(eventPointItem.id, eventPresenter);
   }
 
   /**приватный метод для отрисовки списка событий */
@@ -62,7 +70,7 @@ export default class MainPresenter {
     }
 
     for (let i = 0; i < this.#eventListPoints.length; i++) {
-      this.#renderEventPoints(this.#eventListPoints[i]);
+      this.#renderEventPoint(this.#eventListPoints[i]);
     }
   }
 }
