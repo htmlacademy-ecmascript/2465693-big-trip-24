@@ -3,6 +3,12 @@ import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
 import { isEscapeKey } from '../utils.js';
 
+//режим точки события. DEFAULT - просмотр, EDITING - редактирование
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class EventPresenter {
   #eventPointItem = null;
   #editEventPoint = null;
@@ -12,13 +18,17 @@ export default class EventPresenter {
   #offersModel = null;
   #container = null;
   #handleDataChange = null;
+  #handleModeChange = null;
+  //флаг хранящий текущий режим отображения
+  #mode = Mode.DEFAULT;
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel, onDataChange }) {
+  constructor({ container, eventPointsModel, offersModel, destinationsModel, onDataChange, onModeChange }) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(eventPointItem) {
@@ -52,11 +62,11 @@ export default class EventPresenter {
     }
 
     //проверка , чтобы не пытаться заменить то, что не было отрисовано
-    if (this.#container.contains(prevEventPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#eventPoint, prevEventPointComponent);
     }
 
-    if (this.#container.contains(prevEditEventPointComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editEventPoint, prevEditEventPointComponent);
     }
 
@@ -67,6 +77,12 @@ export default class EventPresenter {
   destroy() {
     remove(this.#eventPoint);
     remove(this.#editEventPoint);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceEditToView();
+    }
   }
 
   #escKeyDownHandler = (evt) => {
@@ -91,6 +107,16 @@ export default class EventPresenter {
   /**функция replace framework'a , по замене точки на форму редактирования*/
   #replaceViewToEdit = () => {
     replace(this.#editEventPoint, this.#eventPoint);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  };
+
+  /**функция replace framework'a , по замене формы редактирования на просмотр точки */
+  #replaceEditToView = () => {
+    replace(this.#eventPoint, this.#editEventPoint);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 
   /**функция по замене формы редактирования на точку */
@@ -104,10 +130,5 @@ export default class EventPresenter {
     this.#handleDataChange(eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  /**функция replace framework'a , по замене формы редактирования на просмотр точки */
-  #replaceEditToView = () => {
-    replace(this.#eventPoint, this.#editEventPoint);
   };
 }

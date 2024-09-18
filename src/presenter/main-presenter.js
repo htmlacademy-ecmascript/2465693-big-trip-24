@@ -61,10 +61,15 @@ export default class MainPresenter {
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleEventPointChange,
+      onModeChange: this.#handleModeChange,
     });
     eventPresenter.init(eventPointItem);
     this.#eventPresenters.set(eventPointItem.id, eventPresenter);
   }
+
+  #handleModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
