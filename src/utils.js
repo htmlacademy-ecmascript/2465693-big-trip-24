@@ -106,6 +106,9 @@ const replaceSpaceInName = (string) => {
   return string.replace(relaceSymbol, '-');
 };
 
+//функция для обновления события
+const updateItem = (items, update) => items.map((item) => (item.id === update.id ? update : item));
+
 export {
   capitalizeLetter,
   getRandomInteger,
@@ -117,4 +120,5 @@ export {
   isEscapeKey,
   filter,
   replaceSpaceInName,
+  updateItem,
 };
