@@ -11,12 +11,14 @@ export default class EventPresenter {
   #destinationsModel = null;
   #offersModel = null;
   #container = null;
+  #handleDataChange = null;
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
+  constructor({ container, eventPointsModel, offersModel, destinationsModel, onDataChange }) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#handleDataChange = onDataChange;
   }
 
   init(eventPointItem) {
@@ -29,7 +31,8 @@ export default class EventPresenter {
       eventPoint: this.#eventPointItem,
       destination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       offers: [...this.#offersModel.getOffersById(eventPointItem.type, eventPointItem.offers)],
-      onEditButtonClick: () => this.#onEditButtonClick(),
+      onEditButtonClick: this.#onEditButtonClick,
+      onFavoriteClick: this.#onFavoriteClick,
     });
 
     this.#editEventPoint = new FormEditView({
@@ -38,8 +41,8 @@ export default class EventPresenter {
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       destination: this.#destinationsModel.destinations,
       arrayTypeOffers: this.#offersModel.getOffersType(),
-      onFormSubmit: () => this.#onFormSubmit(),
-      onRollupButtonClick: () => this.#onRollupButtonClick(),
+      onFormSubmit: this.#onFormSubmit,
+      onRollupButtonClick: this.#onRollupButtonClick,
     });
 
     //проверка были ли отрисованы компоненты
@@ -74,9 +77,15 @@ export default class EventPresenter {
     }
   };
 
+  /**функция по замене точки на форму редактирования */
   #onEditButtonClick = () => {
     this.#replaceViewToEdit();
     document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  /**функция добавления в избранное */
+  #onFavoriteClick = () => {
+    this.#handleDataChange({ ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
   };
 
   /**функция replace framework'a , по замене точки на форму редактирования*/
@@ -91,7 +100,8 @@ export default class EventPresenter {
   };
 
   /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
-  #onFormSubmit = () => {
+  #onFormSubmit = (eventPointItem) => {
+    this.#handleDataChange(eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };

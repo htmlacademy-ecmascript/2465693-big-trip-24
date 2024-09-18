@@ -60,6 +60,7 @@ export default class MainPresenter {
       eventPointsModel: this.#eventPointsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleEventPointChange,
     });
     eventPresenter.init(eventPointItem);
     this.#eventPresenters.set(eventPointItem.id, eventPresenter);
