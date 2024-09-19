@@ -39,20 +39,6 @@ const getRandomArrayIdOffers = (currentArrayIdOffers) => {
   return resultOffers;
 };
 
-//генерация уникального id
-const createRandomIdFromRangeGenerator = (min, max) => {
-  const previousValues = [];
-
-  return function () {
-    let currentValue = getRandomInteger(min, max);
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(min, max);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
-  };
-};
-
 //офрматирование даты
 const humanizeTaskDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
@@ -116,9 +102,12 @@ const filter = {
 
 //заменяет пробелы на тире в offers для id формы редактирования
 const replaceSpaceInName = (string) => {
-  const relaceSymbol = / /g;
+  const relaceSymbol = /\s+/g;
   return string.replace(relaceSymbol, '-');
 };
+
+//функция для обновления события
+const updateItem = (items, update) => items.map((item) => (item.id === update.id ? update : item));
 
 export {
   capitalizeLetter,
@@ -126,10 +115,10 @@ export {
   getRandomArrayElement,
   getArrayIds,
   getRandomArrayIdOffers,
-  createRandomIdFromRangeGenerator,
   humanizeTaskDueDate,
   getDuration,
   isEscapeKey,
   filter,
   replaceSpaceInName,
+  updateItem,
 };

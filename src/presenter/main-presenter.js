@@ -1,12 +1,11 @@
 import { MessageText } from '../const.js';
-import FormEditView from '../view/form-edit-view.js';
-import LocationPointView from '../view/location-point-view.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
-import { isEscapeKey } from '../utils.js';
+import EventPresenter from './event-presenter.js';
+import { updateItem } from '../utils.js';
 
-import { render, RenderPosition, replace } from '../framework/render.js';
+import { render, RenderPosition } from '../framework/render.js';
 
 export default class MainPresenter {
   #eventList = new EventListView();
@@ -14,8 +13,11 @@ export default class MainPresenter {
   #eventPointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #sortComponent = new SortView();
+  #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
 
   #eventListPoints = [];
+  #eventPresenters = new Map();
 
   constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
     this.#container = container;
@@ -26,77 +28,62 @@ export default class MainPresenter {
 
   init() {
     this.#eventListPoints = [...this.#eventPointsModel.eventPoints];
-    this.#renderEventList();
+    this.#renderEventsList();
   }
+
+  /**приватный метод для отрисовки компонентов сортировки */
+  #renderSort() {
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
+  }
+
+  /**приватный метод для отрисовки сообщения на странице */
+  #renderMessage() {
+    render(this.#messageComponent, this.#container);
+  }
+
+  /**приватный метод для очистки точек событий */
+  #clearEventPoints() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
+  /**обработчик изменений в точке события */
+  #handleEventPointChange = (updatedEventPoint) => {
+    this.#eventListPoints = updateItem(this.#eventListPoints, updatedEventPoint);
+    this.#eventPresenters.get(updatedEventPoint.id).init(updatedEventPoint);
+  };
 
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
-  #renderEventPoints(eventPointItem) {
-    /**создание точки */
-    const eventPoint = new LocationPointView({
-      eventPoint: eventPointItem,
-      destination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
-      offers: [...this.#offersModel.getOffersById(eventPointItem.type, eventPointItem.offers)],
-      onEditButtonClick,
+  #renderEventPoint(eventPointItem) {
+    const eventPresenter = new EventPresenter({
+      container: this.#eventList.element,
+      eventPointsModel: this.#eventPointsModel,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleEventPointChange,
+      onModeChange: this.#handleModeChange,
     });
-
-    /**создание формы редактирования */
-    const editEventPoint = new FormEditView({
-      eventPoint: eventPointItem,
-      availableOffers: this.#offersModel.getOffersByType(eventPointItem.type),
-      pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
-      destination: this.#destinationsModel.destinations,
-      arrayTypeOffers: this.#offersModel.getOffersType(),
-      onFormSubmit,
-      onRollupButtonClick,
-    });
-
-    const escKeyDownHandler = (evt) => {
-      if (isEscapeKey(evt)) {
-        evt.preventDefault();
-        replaceEditToView();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    function onEditButtonClick() {
-      replaceViewToEdit();
-      document.addEventListener('keydown', escKeyDownHandler);
-    }
-    /**вызов функции replace framework'a , по замене точки на форму редактирования*/
-    function replaceViewToEdit() {
-      replace(editEventPoint, eventPoint);
-    }
-
-    function onRollupButtonClick() {
-      replaceEditToView();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }
-
-    function onFormSubmit() {
-      replaceEditToView();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }
-
-    /**вызов функции replace framework'a , по замене формы редактирования на просмотр точки */
-    function replaceEditToView() {
-      replace(eventPoint, editEventPoint);
-    }
-
-    render(eventPoint, this.#eventList.element);
+    eventPresenter.init(eventPointItem);
+    this.#eventPresenters.set(eventPointItem.id, eventPresenter);
   }
 
-  #renderEventList() {
+  #handleModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  /**приватный метод для отрисовки списка событий */
+  #renderEventsList() {
+    render(this.#eventList, this.#container);
+    this.#renderSort();
+
     //проверяем, если событий нет, то выводим сообщение
     if (!this.#eventListPoints.length) {
-      render(new MessageView({ message: MessageText.EVERYTHING }), this.#container);
+      this.#renderMessage();
       return;
     }
 
-    render(new SortView(), this.#container, RenderPosition.BEFOREEND);
-    render(this.#eventList, this.#container);
-
     for (let i = 0; i < this.#eventListPoints.length; i++) {
-      this.#renderEventPoints(this.#eventListPoints[i]);
+      this.#renderEventPoint(this.#eventListPoints[i]);
     }
   }
 }
