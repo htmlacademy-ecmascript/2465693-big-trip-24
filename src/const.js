@@ -1,4 +1,3 @@
-const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
 const NUMBER_LOCATION_POINTS = 3;
 
 const TimeConverter = {
@@ -19,6 +18,14 @@ const MessageText = {
   FUTURE: 'There are no future events now',
 };
 
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -26,4 +33,4 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { SORT_TYPES, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType };
+export { SortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType };
