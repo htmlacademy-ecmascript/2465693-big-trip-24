@@ -109,6 +109,17 @@ const replaceSpaceInName = (string) => {
 //функция для обновления события
 const updateItem = (items, update) => items.map((item) => (item.id === update.id ? update : item));
 
+const sortByDay = (eventA, eventB) => dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
+
+const sortByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
+
+const sortByTime = (eventA, eventB) => {
+  const eventADuration = dayjs(eventA.dateTo).diff(eventA.dateFrom);
+  const eventBDuration = dayjs(eventB.dateTo).diff(eventB.dateFrom);
+
+  return eventBDuration - eventADuration;
+};
+
 export {
   capitalizeLetter,
   getRandomInteger,
@@ -121,4 +132,7 @@ export {
   filter,
   replaceSpaceInName,
   updateItem,
+  sortByDay,
+  sortByPrice,
+  sortByTime,
 };
