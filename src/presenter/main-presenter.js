@@ -19,7 +19,7 @@ export default class MainPresenter {
   #eventListPoints = [];
   #eventPresenters = new Map();
 
-  #currentSortType = SortType.DEFAULT;
+  #currentSortType = SortType.DAY;
   #sourcedEventPoints = [];
 
   constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
@@ -30,7 +30,7 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#eventListPoints = [...this.#eventPointsModel.eventPoints];
+    this.#eventListPoints = [...this.#eventPointsModel.eventPoints].sort(sortByDay);
     this.#sourcedEventPoints = [...this.#eventPointsModel.eventPoints];
     this.#renderSort();
     this.#renderEventsList();
@@ -40,6 +40,7 @@ export default class MainPresenter {
   #renderSort() {
     this.#sortComponent = new SortView({
       onSortTypeChange: this.#handleSortTypeChange,
+      checkedSortType: this.#currentSortType,
     });
 
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);

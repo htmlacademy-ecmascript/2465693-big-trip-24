@@ -26,6 +26,14 @@ const SortType = {
   OFFERS: 'offers',
 };
 
+const availableSortType = {
+  [SortType.DAY]: true,
+  [SortType.EVENT]: false,
+  [SortType.TIME]: true,
+  [SortType.PRICE]: true,
+  [SortType.OFFERS]: false,
+};
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -33,4 +41,4 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { SortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType };
+export { SortType, availableSortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType };
