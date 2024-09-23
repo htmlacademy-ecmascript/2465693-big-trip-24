@@ -1,20 +1,46 @@
-import { SORT_TYPES } from '../const.js';
+import { SortType, availableSortType } from '../const.js';
 import { capitalizeLetter } from '../utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createSortItemTemplate = (type) =>
-  `<div class="trip-sort__item  trip-sort__item--${type}">
-     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}">
-     <label class="trip-sort__btn" for="sort-${type}">${capitalizeLetter(type)}</label>
-   </div>`;
+const createSortItemTemplate = (type, checkedSortType) => `
+  <div class="trip-sort__item  trip-sort__item--${type}">
+    <input
+      id="sort-${type}"
+      class="trip-sort__input visually-hidden"
+      type="radio" name="trip-sort"
+      data-sort-type="${type}"
+      value="sort-${type}"
+      ${type === checkedSortType ? 'checked' : ''}
+      ${!availableSortType[type] ? 'disabled' : ''}>
+    <label class="trip-sort__btn" for="sort-${type}">${capitalizeLetter(type)}</label>
+  </div>`;
 
-const createNewSortViewTemplate = () =>
-  `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-     ${SORT_TYPES.map((type) => createSortItemTemplate(type)).join('')}
+const createNewSortViewTemplate = (checkedSortType) => `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  ${Object.values(SortType)
+    .map((type) => createSortItemTemplate(type, checkedSortType))
+    .join('')}
    </form>`;
 
 export default class SortView extends AbstractView {
-  get template() {
-    return createNewSortViewTemplate();
+  #handleSortTypeChange = null;
+  #checkedSortType = null;
+
+  constructor({ onSortTypeChange, checkedSortType }) {
+    super();
+    this.#handleSortTypeChange = onSortTypeChange;
+    this.#checkedSortType = checkedSortType;
+    this.element.addEventListener('change', this.#sortTypeChangeHandler);
   }
+
+  get template() {
+    return createNewSortViewTemplate(this.#checkedSortType);
+  }
+
+  #sortTypeChangeHandler = (evt) => {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+
+    this.#handleSortTypeChange(evt.target.dataset.sortType);
+  };
 }
