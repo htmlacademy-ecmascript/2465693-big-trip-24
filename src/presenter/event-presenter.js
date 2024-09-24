@@ -49,8 +49,8 @@ export default class EventPresenter {
       eventPoint: this.#eventPointItem,
       availableOffers: this.#offersModel.getOffersByType(eventPointItem.type),
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
-      destination: this.#destinationsModel.destinations,
-      arrayTypeOffers: this.#offersModel.getOffersType(),
+      destinations: this.#destinationsModel.destinations,
+      typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
     });

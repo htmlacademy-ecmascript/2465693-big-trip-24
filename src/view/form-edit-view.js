@@ -22,7 +22,7 @@ const createTypeItemTemplate = (type) => `
 
 const createDestinationNameTemplate = (nameItem) => `<option value="${nameItem}"></option>`;
 
-const createNewFormEditViewTemplate = (eventPoint, availableOffers, pointDestination, destination, arrayTypeOffers) => {
+const createNewFormEditViewTemplate = (eventPoint, availableOffers, pointDestination, destinations, typeOffers) => {
   const eventTime = (eventDate) => humanizeTaskDueDate(eventDate, DateFormat.EDIT_DATE);
   const destinationName = pointDestination.name;
   const createAvailableOffers = availableOffers.offers
@@ -33,14 +33,14 @@ const createNewFormEditViewTemplate = (eventPoint, availableOffers, pointDestina
     })
     .join('');
 
-  const createAvailableTypes = arrayTypeOffers
+  const createAvailableTypes = typeOffers
     .map((type) => {
       const isCheckedTypeClassName = type === capitalizeLetter(eventPoint.type) ? 'checked' : '';
       return createTypeItemTemplate(type, isCheckedTypeClassName);
     })
     .join('');
 
-  const createAvailableDestinationName = destination.map((destinationItem) => createDestinationNameTemplate(destinationItem.name)).join('');
+  const createAvailableDestinationName = destinations.map((destinationItem) => createDestinationNameTemplate(destinationItem.name)).join('');
 
   return `
             <li class="trip-events__item">
@@ -118,19 +118,19 @@ export default class FormEditView extends AbstractView {
   #eventPoint = null;
   #availableOffers = null;
   #pointDestination = null;
-  #destination = null;
-  #arrayTypeOffers = null;
+  #destinations = null;
+  #typeOffers = null;
   #handleFormSubmit = null;
   #handleRollupButtonClick = null;
 
-  constructor({ eventPoint, availableOffers, pointDestination, destination, arrayTypeOffers, onFormSubmit, onRollupButtonClick }) {
+  constructor({ eventPoint, availableOffers, pointDestination, destinations, typeOffers, onFormSubmit, onRollupButtonClick }) {
     /**super вызывает конструктор родительского класса*/
     super();
     this.#eventPoint = eventPoint;
     this.#availableOffers = availableOffers;
     this.#pointDestination = pointDestination;
-    this.#destination = destination;
-    this.#arrayTypeOffers = arrayTypeOffers;
+    this.#destinations = destinations;
+    this.#typeOffers = typeOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupButtonClick = onRollupButtonClick;
 
@@ -139,7 +139,7 @@ export default class FormEditView extends AbstractView {
   }
 
   get template() {
-    return createNewFormEditViewTemplate(this.#eventPoint, this.#availableOffers, this.#pointDestination, this.#destination, this.#arrayTypeOffers);
+    return createNewFormEditViewTemplate(this.#eventPoint, this.#availableOffers, this.#pointDestination, this.#destinations, this.#typeOffers);
   }
 
   #formSubmitHandler = (evt) => {

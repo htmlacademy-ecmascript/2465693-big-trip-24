@@ -1,4 +1,4 @@
-const arrayDestinations = [
+const destinations = [
   {
     id: 'e2ddfcc3-a9b8-4db6-a811-a3828d2a829c',
     description: 'Nagasaki - with crowded streets',
@@ -174,4 +174,4 @@ const arrayDestinations = [
   },
 ];
 
-export { arrayDestinations };
+export { destinations };
