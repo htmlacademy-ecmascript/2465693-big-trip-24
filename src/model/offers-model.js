@@ -9,11 +9,11 @@ export default class OffersModel {
 
   getOffersType() {
     const availableOffers = this.offers;
-    const arrayTypeOffers = [];
+    const typeOffers = [];
     for (let i = 0; i < availableOffers.length; i++) {
-      arrayTypeOffers.push(availableOffers[i].type);
+      typeOffers.push(availableOffers[i].type);
     }
-    return arrayTypeOffers;
+    return typeOffers;
   }
 
   getOffersByType(type) {

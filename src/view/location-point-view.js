@@ -1,6 +1,6 @@
 import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeTaskDueDate, getDuration } from '../utils.js';
+import { humanizeEventDueDate, getDuration } from '../utils.js';
 
 const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
   const { basePrice, dateFrom, dateTo, isFavorite, type } = eventPoint;
@@ -19,16 +19,16 @@ const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
   return `
   <li class="trip-events__item">
   <div class="event">
-  <time class="event__date" datetime="${dateFrom}">${humanizeTaskDueDate(dateFrom, DateFormat.EVENT_DATE)}</time>
+  <time class="event__date" datetime="${dateFrom}">${humanizeEventDueDate(dateFrom, DateFormat.EVENT_DATE)}</time>
   <div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
   </div>
   <h3 class="event__title">${type} ${destination.name}</h3>
   <div class="event__schedule">
     <p class="event__time">
-    <time class="event__start-time" datetime="${dateFrom}">${humanizeTaskDueDate(dateFrom, DateFormat.EVENT_TIME)}</time>
+    <time class="event__start-time" datetime="${dateFrom}">${humanizeEventDueDate(dateFrom, DateFormat.EVENT_TIME)}</time>
     &mdash;
-    <time class="event__end-time" datetime="${dateTo}">${humanizeTaskDueDate(dateTo, DateFormat.EVENT_TIME)}</time>
+    <time class="event__end-time" datetime="${dateTo}">${humanizeEventDueDate(dateTo, DateFormat.EVENT_TIME)}</time>
     </p>
     <p class="event__duration">${durationEvent}</p>
   </div>

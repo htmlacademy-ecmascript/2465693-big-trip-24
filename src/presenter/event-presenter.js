@@ -47,10 +47,11 @@ export default class EventPresenter {
 
     this.#editEventPoint = new FormEditView({
       eventPoint: this.#eventPointItem,
-      availableOffers: this.#offersModel.getOffersByType(eventPointItem.type),
+      allOffersByType: this.#offersModel.getOffersByType(eventPointItem.type),
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
-      destination: this.#destinationsModel.destinations,
-      arrayTypeOffers: this.#offersModel.getOffersType(),
+      allDestinations: this.#destinationsModel.destinations,
+      allOffers: this.#offersModel.offers,
+      typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
     });
@@ -81,6 +82,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editEventPoint.reset(this.#eventPointItem);
       this.#replaceEditToView();
     }
   }
@@ -88,6 +90,7 @@ export default class EventPresenter {
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
+      this.#editEventPoint.reset(this.#eventPointItem);
       this.#replaceEditToView();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
@@ -120,7 +123,8 @@ export default class EventPresenter {
   };
 
   /**функция по замене формы редактирования на точку */
-  #onRollupButtonClick = () => {
+  #onRollupButtonClick = (eventPointItem) => {
+    this.#handleDataChange(eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };

@@ -1,6 +1,6 @@
 import { getRandomInteger, getRandomArrayElement, getArrayIds, getRandomArrayIdOffers } from '../utils.js';
 import { arrayOffers } from './offers.js';
-import { arrayDestinations } from './destinations.js';
+import { destinations } from './destinations.js';
 import { PricePoint } from './const-mock.js';
 import { dateFrom, dateTo } from './date.js';
 import { nanoid } from 'nanoid';
@@ -17,7 +17,7 @@ const getRandomEventPoint = () => {
     basePrice: getRandomInteger(PricePoint.MIN, PricePoint.MAX),
     dateFrom: startDate,
     dateTo: dateTo(startDate),
-    destination: getRandomArrayElement(getArrayIds(arrayDestinations)),
+    destination: getRandomArrayElement(getArrayIds(destinations)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     offers: getRandomArrayIdOffers(arrayOffersByType),
     type: arrayOffers[indexItemArrayOffer].type,
