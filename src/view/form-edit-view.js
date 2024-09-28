@@ -146,15 +146,15 @@ ${
       `
     : ''
 }
-                  </section>
-                </section>
-              </form>
-            </li>`;
+          </section>
+        </section>
+      </form>
+    </li>`;
 };
 
 export default class FormEditView extends AbstractStatefulView {
-  #eventPoint = null;
-  #allOffersByType = null;
+  #originalPoint = null;
+  #allOffersByType = [];
   #pointDestination = null;
   #allDestinations = [];
   #allOffers = [];
@@ -165,6 +165,7 @@ export default class FormEditView extends AbstractStatefulView {
   constructor({ eventPoint, allDestinations, allOffers, allOffersByType, onFormSubmit, onRollupButtonClick }) {
     /**super вызывает конструктор родительского класса*/
     super();
+    this.#originalPoint = eventPoint;
     this._setState(FormEditView.parsePointToState(eventPoint));
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
@@ -182,9 +183,8 @@ export default class FormEditView extends AbstractStatefulView {
     });
   }
 
-  reset(point) {
-    this.updateElement(FormEditView.parsePointToState(point));
-    return createNewFormEditViewTemplate(this.#allDestinations, this.#pointDestination, this.#eventPoint, this.#allOffers);
+  reset(eventPoint) {
+    this.updateElement(FormEditView.parsePointToState(eventPoint));
   }
 
   _restoreHandlers() {
@@ -202,12 +202,12 @@ export default class FormEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(FormEditView.parseStateToPoint(this._state));
+    this.#handleFormSubmit(FormEditView.parseStateToPoint(this.#originalPoint));
   };
 
   #rollupButtonClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleRollupButtonClick();
+    this.#handleRollupButtonClick(FormEditView.parseStateToPoint(this.#originalPoint));
   };
 
   #typeOptionHandler = (evt) => {

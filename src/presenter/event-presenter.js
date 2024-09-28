@@ -82,6 +82,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editEventPoint.reset(this.#eventPointItem);
       this.#replaceEditToView();
     }
   }
@@ -89,6 +90,7 @@ export default class EventPresenter {
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
+      this.#editEventPoint.reset(this.#eventPointItem);
       this.#replaceEditToView();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
@@ -121,7 +123,8 @@ export default class EventPresenter {
   };
 
   /**функция по замене формы редактирования на точку */
-  #onRollupButtonClick = () => {
+  #onRollupButtonClick = (eventPointItem) => {
+    this.#handleDataChange(eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
