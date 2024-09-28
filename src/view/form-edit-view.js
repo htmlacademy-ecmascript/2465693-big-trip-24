@@ -2,6 +2,8 @@ import { DateFormat } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { capitalizeLetter, humanizeEventDueDate, replaceSpaceInName } from '../utils.js';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createOfferItemTemplate = (type, title, price, className) => `
   <div class="event__offer-selector">
@@ -149,6 +151,8 @@ export default class FormEditView extends AbstractStatefulView {
   #allDestinations = [];
   #allOffers = [];
   #typeOffers = [];
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
   #handleFormSubmit = null;
   #handleRollupButtonClick = null;
@@ -180,6 +184,21 @@ export default class FormEditView extends AbstractStatefulView {
     this.updateElement(FormEditView.parsePointToState(eventPoint));
   }
 
+  //перегружаем метод родителя, чтобы при удалении удалялся более не нужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+    }
+
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
+    }
+  }
+
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupButtonClickHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
@@ -191,16 +210,14 @@ export default class FormEditView extends AbstractStatefulView {
     if (offersElement) {
       offersElement.addEventListener('change', this.#offersChangeHandler);
     }
+
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(FormEditView.parseStateToPoint(this.#originalPoint));
-  };
-
-  #rollupButtonClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleRollupButtonClick(FormEditView.parseStateToPoint(this.#originalPoint));
   };
 
   #typeOptionHandler = (evt) => {
@@ -213,14 +230,54 @@ export default class FormEditView extends AbstractStatefulView {
     this.updateElement({ destination: selectedDestinationId });
   };
 
-  #offersChangeHandler = () => {
-    const selectedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
-    this._setState({ offers: selectedOffers.map((offer) => offer.dataset.offerId) });
+  #dateFromChangeHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate,
+    });
   };
 
   #priceInputHandler = (evt) => {
     this._setState({ basePrice: evt.target.value });
   };
+
+  #rollupButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleRollupButtonClick(FormEditView.parseStateToPoint(this.#originalPoint));
+  };
+
+  #offersChangeHandler = () => {
+    const selectedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    this._setState({ offers: selectedOffers.map((offer) => offer.dataset.offerId) });
+  };
+
+  #setDatepickerStart() {
+    this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time-1'), {
+      dateFormat: 'd/m/y H:i', //формат даты
+      enableTime: true, //будет доступно задание времени
+      // eslint-disable-next-line camelcase
+      time_24hr: true, //формат времени
+      defaultDate: this._state.dateFrom, //стартовая дата
+      onChange: this.#dateFromChangeHandler,
+    });
+  }
+
+  #setDatepickerEnd() {
+    this.#datepickerEnd = flatpickr(this.element.querySelector('#event-end-time-1'), {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      // eslint-disable-next-line camelcase
+      time_24hr: true,
+      defaultDate: this._state.dateTo,
+      onChange: this.#dateToChangeHandler,
+      minDate: this._state.dateFrom, //дата, раньше которой нельзя выбрать дату
+    });
+  }
 
   static parsePointToState(eventPoint) {
     if (eventPoint.dateFrom instanceof dayjs) {
