@@ -40,7 +40,7 @@ const getRandomArrayIdOffers = (currentArrayIdOffers) => {
 };
 
 //офрматирование даты
-const humanizeTaskDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
+const humanizeEventDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
 const getDuration = (dateBegin, dateEnd) => {
   //вычисляем разницу в минутах
@@ -126,7 +126,7 @@ export {
   getRandomArrayElement,
   getArrayIds,
   getRandomArrayIdOffers,
-  humanizeTaskDueDate,
+  humanizeEventDueDate,
   getDuration,
   isEscapeKey,
   filter,

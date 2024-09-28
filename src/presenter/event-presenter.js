@@ -47,10 +47,11 @@ export default class EventPresenter {
 
     this.#editEventPoint = new FormEditView({
       eventPoint: this.#eventPointItem,
-      availableOffers: this.#offersModel.getOffersByType(eventPointItem.type),
+      allOffersByType: this.#offersModel.getOffersByType(eventPointItem.type),
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
-      destinations: this.#destinationsModel.destinations,
-      typeOffers: this.#offersModel.getOffersType(),
+      allDestinations: this.#destinationsModel.destinations,
+      allOffers: this.#offersModel.offers,
+      nameTypeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
     });
