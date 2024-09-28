@@ -25,15 +25,6 @@ function createAvailableDestinationTemplateName(destinations) {
   return destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
 }
 
-//получаем массив типов всех offer
-const getOffersType = (offers) => {
-  const offersType = [];
-  for (let i = 0; i < offers.length; i++) {
-    offersType.push(offers[i].type);
-  }
-  return offersType;
-};
-
 const createPictureTemplate = (pictures) =>
   pictures
     .map(
@@ -44,13 +35,12 @@ const createPictureTemplate = (pictures) =>
     )
     .join('');
 
-const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations }) => {
+const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeOffers }) => {
   const { type, basePrice, dateFrom, dateTo } = eventPoint;
   const destination = destinations.find((item) => item.id === eventPoint.destination);
   const { id, name, description, pictures } = destination;
 
   const offersByType = offers.find((item) => item.type === type).offers;
-  const typeOffers = getOffersType(offers);
 
   const createAvailableTypes = typeOffers
     .map((item) => {
@@ -158,17 +148,19 @@ export default class FormEditView extends AbstractStatefulView {
   #pointDestination = null;
   #allDestinations = [];
   #allOffers = [];
+  #typeOffers = [];
 
   #handleFormSubmit = null;
   #handleRollupButtonClick = null;
 
-  constructor({ eventPoint, allDestinations, allOffers, allOffersByType, onFormSubmit, onRollupButtonClick }) {
+  constructor({ eventPoint, allDestinations, allOffers, allOffersByType, typeOffers, onFormSubmit, onRollupButtonClick }) {
     /**super вызывает конструктор родительского класса*/
     super();
     this.#originalPoint = eventPoint;
     this._setState(FormEditView.parsePointToState(eventPoint));
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
+    this.#typeOffers = typeOffers;
     this.#allOffersByType = allOffersByType;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupButtonClick = onRollupButtonClick;
@@ -180,6 +172,7 @@ export default class FormEditView extends AbstractStatefulView {
       eventPoint: this._state,
       destinations: this.#allDestinations,
       offers: this.#allOffers,
+      typeOffers: this.#typeOffers,
     });
   }
 

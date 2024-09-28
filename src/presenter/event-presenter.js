@@ -51,7 +51,7 @@ export default class EventPresenter {
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       allDestinations: this.#destinationsModel.destinations,
       allOffers: this.#offersModel.offers,
-      nameTypeOffers: this.#offersModel.getOffersType(),
+      typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
     });
