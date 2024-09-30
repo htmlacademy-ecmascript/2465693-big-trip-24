@@ -29,6 +29,10 @@ export default class MainPresenter {
     this.#destinationsModel = destinationsModel;
   }
 
+  get eventPoints() {
+    return this.#eventPointsModel.eventPoints;
+  }
+
   init() {
     this.#eventListPoints = [...this.#eventPointsModel.eventPoints].sort(sortByDay);
     this.#sourcedEventPoints = [...this.#eventPointsModel.eventPoints];
