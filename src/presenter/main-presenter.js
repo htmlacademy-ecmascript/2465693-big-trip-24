@@ -16,11 +16,9 @@ export default class MainPresenter {
   #sortComponent = null;
   #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
 
-  #eventListPoints = [];
   #eventPresenters = new Map();
 
   #currentSortType = SortType.DAY;
-  #sourcedEventPoints = [];
 
   constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
     this.#container = container;
@@ -30,12 +28,18 @@ export default class MainPresenter {
   }
 
   get eventPoints() {
-    return this.#eventPointsModel.eventPoints;
+    switch (this.#currentSortType) {
+      case SortType.TIME:
+        [...this.#eventPointsModel.eventPoints].sort(sortByTime);
+        break;
+      case SortType.PRICE:
+        [...this.#eventPointsModel.eventPoints].sort(sortByPrice);
+        break;
+    }
+    return [...this.#eventPointsModel.eventPoints].sort(sortByDay);
   }
 
   init() {
-    this.#eventListPoints = [...this.#eventPointsModel.eventPoints].sort(sortByDay);
-    this.#sourcedEventPoints = [...this.#eventPointsModel.eventPoints];
     this.#renderSort();
     this.#renderEventsList();
   }
@@ -63,8 +67,7 @@ export default class MainPresenter {
 
   /**обработчик изменений в точке события */
   #handleEventPointChange = (updatedEventPoint) => {
-    this.#eventListPoints = updateItem(this.#eventListPoints, updatedEventPoint);
-    this.#sourcedEventPoints = updateItem(this.#sourcedEventPoints, updatedEventPoint);
+    //Здесь будем вызывать обновление модели
     this.#eventPresenters.get(updatedEventPoint.id).init(updatedEventPoint);
   };
 
@@ -86,47 +89,31 @@ export default class MainPresenter {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  /**специфичные методы сортировки */
-  #sortEventPoints = (sortType) => {
-    switch (sortType) {
-      case SortType.DAY:
-        this.#eventListPoints.sort(sortByDay);
-        break;
-      case SortType.TIME:
-        this.#eventListPoints.sort(sortByTime);
-        break;
-      case SortType.PRICE:
-        this.#eventListPoints.sort(sortByPrice);
-        break;
-      default:
-        this.#eventListPoints = [...this.#sourcedEventPoints];
-    }
-
-    this.#currentSortType = sortType;
-  };
-
   /**обработчик смены сортировки */
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return {};
     }
-    this.#sortEventPoints(sortType);
+
+    this.#currentSortType = sortType;
     this.#clearEventPoints();
     this.#renderEventsList();
   };
+
+  #renderEventPoints(eventPoints) {
+    eventPoints.forEach((eventPoint) => this.#renderEventPoint(eventPoint));
+  }
 
   /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
     render(this.#eventList, this.#container);
 
     //проверяем, если событий нет, то выводим сообщение
-    if (!this.#eventListPoints.length) {
+    if (!this.eventPoints.length) {
       this.#renderMessage();
       return;
     }
 
-    for (let i = 0; i < this.#eventListPoints.length; i++) {
-      this.#renderEventPoint(this.#eventListPoints[i]);
-    }
+    this.#renderEventPoints(this.eventPoints);
   }
 }
