@@ -30,11 +30,9 @@ export default class MainPresenter {
   get eventPoints() {
     switch (this.#currentSortType) {
       case SortType.TIME:
-        [...this.#eventPointsModel.eventPoints].sort(sortByTime);
-        break;
+        return [...this.#eventPointsModel.eventPoints].sort(sortByTime);
       case SortType.PRICE:
-        [...this.#eventPointsModel.eventPoints].sort(sortByPrice);
-        break;
+        return [...this.#eventPointsModel.eventPoints].sort(sortByPrice);
     }
     return [...this.#eventPointsModel.eventPoints].sort(sortByDay);
   }
