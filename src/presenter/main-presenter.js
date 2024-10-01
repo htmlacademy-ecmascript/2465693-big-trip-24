@@ -1,4 +1,4 @@
-import { MessageText, SortType } from '../const.js';
+import { MessageText, SortType, UpdateType, UserAction } from '../const.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
@@ -16,7 +16,7 @@ export default class MainPresenter {
   #sortComponent = null;
   #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
 
-  #eventPresenters = new Map();
+  #eventPresenter = new Map();
 
   #currentSortType = SortType.DAY;
 
@@ -62,14 +62,14 @@ export default class MainPresenter {
 
   /**приватный метод для очистки точек событий */
   #clearEventPoints() {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
+    this.#eventPresenter.forEach((presenter) => presenter.destroy());
+    this.#eventPresenter.clear();
   }
 
   /**обработчик изменений в точке события */
   #handleEventPointChange = (updatedEventPoint) => {
     //Здесь будем вызывать обновление модели
-    this.#eventPresenters.get(updatedEventPoint.id).init(updatedEventPoint);
+    this.#eventPresenter.get(updatedEventPoint.id).init(updatedEventPoint);
   };
 
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
@@ -83,11 +83,11 @@ export default class MainPresenter {
       onModeChange: this.#handleModeChange,
     });
     eventPresenter.init(eventPointItem);
-    this.#eventPresenters.set(eventPointItem.id, eventPresenter);
+    this.#eventPresenter.set(eventPointItem.id, eventPresenter);
   }
 
   #handleModeChange = () => {
-    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+    this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
 
   /**обработчик реагирующий на действия пользователя, Здесь будем вызывать обновление модели.
@@ -96,18 +96,38 @@ export default class MainPresenter {
    * @update обновленные данные
    */
   #handleViewAction = (actionType, updateType, update) => {
-    // eslint-disable-next-line no-console
-    console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#eventPointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#eventPointsModel.addEventPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#eventPointsModel.deletePoint(updateType, update);
+        break;
+    }
   };
 
   /**обработчик срабатывающий при изменении модели. В зависимости от типа изменений решаем, что делать:
-   *- обновить часть списка (например,напр. когда поменялся Destination )
-   *- обновить список (например, когда cj,snbt удалено или добавилось новое)
+   *- обновить часть списка (например, когда поменялся Destination )
+   *- обновить список (например, когда событие удалено или добавилось новое)
    *- обновить всю доску (например, при переключении фильтра)
    */
   #handleModelEvent = (updateType, data) => {
-    // eslint-disable-next-line no-console
-    console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearEventPoints();
+        this.#renderEventsList();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearEventPoints({ resetSortType: true });
+        this.#renderEventsList();
+        break;
+    }
   };
 
   /**обработчик смены сортировки */

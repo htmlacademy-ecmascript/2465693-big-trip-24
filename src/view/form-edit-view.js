@@ -217,7 +217,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(FormEditView.parseStateToPoint(this.#originalPoint));
+    this.#handleFormSubmit(FormEditView.parseStateToPoint(this._state));
   };
 
   #typeOptionHandler = (evt) => {
