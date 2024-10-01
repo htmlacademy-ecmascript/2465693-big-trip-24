@@ -234,6 +234,7 @@ export default class FormEditView extends AbstractStatefulView {
     this._setState({
       dateFrom: userDate,
     });
+    this.#setDatepickerEnd();
   };
 
   #dateToChangeHandler = ([userDate]) => {
