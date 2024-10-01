@@ -1,9 +1,13 @@
 import { render, replace, remove } from '../framework/render.js';
+import { UpdateType, UserAction } from '../const.js';
 import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
 import { isEscapeKey } from '../utils.js';
 
-//режим точки события. DEFAULT - просмотр, EDITING - редактирование
+/**режим точки события.
+ * @DEFAULT - просмотр
+ * @EDITING - редактирование
+ */
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
@@ -102,9 +106,13 @@ export default class EventPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  /**функция добавления в избранное */
+  /**функция добавления в избранное
+   * @UserAction UPDATE_POINT действие которое мы хотим выполнить
+   * @Update Type.MINOR тип обновления
+   * @{...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite } данные которые необходимо обновить
+   */
   #onFavoriteClick = () => {
-    this.#handleDataChange({ ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
   };
 
   /**функция replace framework'a , по замене точки на форму редактирования*/
@@ -122,16 +130,20 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  /**функция по замене формы редактирования на точку */
+  /**функция по замене формы редактирования на точку
+   * @eventPointItem точка события
+   * @UserAction UPDATE_POINT действие которое мы хотим выполнить
+   * @Update Type.MINOR тип обновления
+   */
   #onRollupButtonClick = (eventPointItem) => {
-    this.#handleDataChange(eventPointItem);
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
   #onFormSubmit = (eventPointItem) => {
-    this.#handleDataChange(eventPointItem);
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };

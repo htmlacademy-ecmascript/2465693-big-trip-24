@@ -106,9 +106,6 @@ const replaceSpaceInName = (string) => {
   return string.replace(relaceSymbol, '-');
 };
 
-//функция для обновления события
-const updateItem = (items, update) => items.map((item) => (item.id === update.id ? update : item));
-
 const sortByDay = (eventA, eventB) => dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
 
 const sortByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
@@ -131,7 +128,6 @@ export {
   isEscapeKey,
   filter,
   replaceSpaceInName,
-  updateItem,
   sortByDay,
   sortByPrice,
   sortByTime,

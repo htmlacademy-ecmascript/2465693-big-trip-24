@@ -3,7 +3,7 @@ import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
 import EventPresenter from './event-presenter.js';
-import { updateItem, sortByDay, sortByPrice, sortByTime } from '../utils.js';
+import { sortByDay, sortByPrice, sortByTime } from '../utils.js';
 
 import { render, RenderPosition } from '../framework/render.js';
 
@@ -25,6 +25,9 @@ export default class MainPresenter {
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+
+    //подписка на изменение модели
+    this.#eventPointsModel.addObserver(this.#handleModelEvent);
   }
 
   get eventPoints() {
@@ -76,7 +79,7 @@ export default class MainPresenter {
       eventPointsModel: this.#eventPointsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handleEventPointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
     eventPresenter.init(eventPointItem);
@@ -85,6 +88,26 @@ export default class MainPresenter {
 
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  /**обработчик реагирующий на действия пользователя, Здесь будем вызывать обновление модели.
+   * @actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+   * @updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+   * @update обновленные данные
+   */
+  #handleViewAction = (actionType, updateType, update) => {
+    // eslint-disable-next-line no-console
+    console.log(actionType, updateType, update);
+  };
+
+  /**обработчик срабатывающий при изменении модели. В зависимости от типа изменений решаем, что делать:
+   *- обновить часть списка (например,напр. когда поменялся Destination )
+   *- обновить список (например, когда cj,snbt удалено или добавилось новое)
+   *- обновить всю доску (например, при переключении фильтра)
+   */
+  #handleModelEvent = (updateType, data) => {
+    // eslint-disable-next-line no-console
+    console.log(updateType, data);
   };
 
   /**обработчик смены сортировки */
