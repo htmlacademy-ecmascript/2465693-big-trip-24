@@ -3,7 +3,7 @@ import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
 import EventPresenter from './event-presenter.js';
-import { sortByDay, sortByPrice, sortByTime } from '../utils.js';
+import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
 
 import { render, RenderPosition, remove } from '../framework/render.js';
 
@@ -13,6 +13,7 @@ export default class MainPresenter {
   #eventPointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #filterModel = null;
   #sortComponent = null;
   #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
 
@@ -20,24 +21,30 @@ export default class MainPresenter {
 
   #currentSortType = SortType.DAY;
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
+  constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel }) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#filterModel = filterModel;
 
     //подписка на изменение модели
     this.#eventPointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get eventPoints() {
+    const filterType = this.#filterModel.filter;
+    const eventPoints = this.#eventPointsModel.eventPoints;
+    const filteredPoints = filter[filterType](eventPoints);
+
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return [...this.#eventPointsModel.eventPoints].sort(sortByTime);
+        return filteredPoints.sort(sortByTime);
       case SortType.PRICE:
-        return [...this.#eventPointsModel.eventPoints].sort(sortByPrice);
+        return filteredPoints.sort(sortByPrice);
     }
-    return [...this.#eventPointsModel.eventPoints].sort(sortByDay);
+    return filteredPoints.sort(sortByDay);
   }
 
   init() {
