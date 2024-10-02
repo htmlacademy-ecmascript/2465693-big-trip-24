@@ -5,9 +5,10 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createOfferItemTemplate = (type, title, price, className) => `
+const createOfferItemTemplate = (type, title, price, id, className) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceSpaceInName(title)}-1" type="checkbox" name="event-offer-${type}" ${className}>
+    <input class="event__offer-checkbox  visually-hidden"
+    id="event-offer-${replaceSpaceInName(title)}-1" type="checkbox" name="event-offer-${type}" data-offer-id="${id}" ${className}>
     <label class="event__offer-label" for="event-offer-${replaceSpaceInName(title)}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -57,7 +58,7 @@ const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeO
     .map((offer) => {
       const isCheckedOfferClassName = eventPoint.offers.includes(offer.id) ? 'checked' : '';
 
-      return createOfferItemTemplate(type, offer.title, offer.price, isCheckedOfferClassName);
+      return createOfferItemTemplate(type, offer.title, offer.price, offer.id, isCheckedOfferClassName);
     })
     .join('');
 
@@ -253,8 +254,9 @@ export default class FormEditView extends AbstractStatefulView {
   };
 
   #offersChangeHandler = () => {
-    const selectedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
-    this._setState({ offers: selectedOffers.map((offer) => offer.dataset.offerId) });
+    const selectedOffersElement = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    const selectedOffersById = selectedOffersElement.map((offer) => offer.dataset.offerId);
+    this._setState({ offers: selectedOffersById });
   };
 
   #setDatepickerStart() {
