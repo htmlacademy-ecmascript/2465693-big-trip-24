@@ -5,7 +5,6 @@ import EventPointsModel from './model/event-points-model.js';
 import OffersModel from './model/offers-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
-import { generateFilter } from './mock/filter.js';
 
 import { render } from './framework/render.js';
 
@@ -18,8 +17,14 @@ const destinationsModel = new DestinationsModel();
 const filterModel = new FilterModel();
 const mainPresenter = new MainPresenter({ container: tripEventsElement, eventPointsModel, offersModel, destinationsModel });
 const tripInfoPresenter = new TripInfoPresenter({ container: tripMainElement });
-const filters = generateFilter(eventPointsModel.eventPoints);
+
+const filters = [
+  {
+    type: 'Everything',
+    count: 0,
+  },
+];
 
 tripInfoPresenter.init();
-render(new FiltersView(filters), filterControlElement);
+render(new FiltersView({ filters, currentFilterType: 'Everything', onFilterTypeChange: () => {} }), filterControlElement);
 mainPresenter.init();
