@@ -5,7 +5,7 @@ import MessageView from '../view/message-view.js';
 import EventPresenter from './event-presenter.js';
 import { sortByDay, sortByPrice, sortByTime } from '../utils.js';
 
-import { render, RenderPosition } from '../framework/render.js';
+import { render, RenderPosition, remove } from '../framework/render.js';
 
 export default class MainPresenter {
   #eventList = new EventListView();
@@ -48,8 +48,8 @@ export default class MainPresenter {
   /**приватный метод для отрисовки компонентов сортировки */
   #renderSort() {
     this.#sortComponent = new SortView({
-      onSortTypeChange: this.#handleSortTypeChange,
       checkedSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange,
     });
 
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
@@ -59,18 +59,6 @@ export default class MainPresenter {
   #renderMessage() {
     render(this.#messageComponent, this.#container);
   }
-
-  /**приватный метод для очистки точек событий */
-  #clearEventPoints() {
-    this.#eventPresenter.forEach((presenter) => presenter.destroy());
-    this.#eventPresenter.clear();
-  }
-
-  /**обработчик изменений в точке события */
-  #handleEventPointChange = (updatedEventPoint) => {
-    //Здесь будем вызывать обновление модели
-    this.#eventPresenter.get(updatedEventPoint.id).init(updatedEventPoint);
-  };
 
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
   #renderEventPoint(eventPointItem) {
@@ -89,6 +77,18 @@ export default class MainPresenter {
   #handleModeChange = () => {
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
+
+  #clearPage({ resetSortType = false } = {}) {
+    this.#eventPresenter.forEach((presenter) => presenter.destroy());
+    this.#eventPresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#messageComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  }
 
   /**обработчик реагирующий на действия пользователя, Здесь будем вызывать обновление модели.
    * @actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
@@ -120,12 +120,12 @@ export default class MainPresenter {
         this.#eventPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearEventPoints();
-        this.#renderEventsList();
+        this.#clearPage();
+        this.#renderPage();
         break;
       case UpdateType.MAJOR:
-        this.#clearEventPoints({ resetSortType: true });
-        this.#renderEventsList();
+        this.#clearPage({ resetSortType: true });
+        this.#renderPage();
         break;
     }
   };
@@ -137,8 +137,8 @@ export default class MainPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearEventPoints();
-    this.#renderEventsList();
+    this.#clearPage();
+    this.#renderPage();
   };
 
   #renderEventPoints(eventPoints) {
@@ -148,13 +148,16 @@ export default class MainPresenter {
   /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
     render(this.#eventList, this.#container);
+    this.#renderEventPoints(this.eventPoints);
+  }
 
+  #renderPage() {
     //проверяем, если событий нет, то выводим сообщение
     if (!this.eventPoints.length) {
       this.#renderMessage();
       return;
     }
-
-    this.#renderEventPoints(this.eventPoints);
+    this.#renderSort();
+    this.#renderEventsList();
   }
 }
