@@ -2,7 +2,7 @@ import { render, replace, remove } from '../framework/render.js';
 import { UpdateType, UserAction } from '../const.js';
 import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
-import { isEscapeKey } from '../utils.js';
+import { isEscapeKey, isDatesChange } from '../utils.js';
 
 /**режим точки события.
  * @DEFAULT - просмотр
@@ -58,6 +58,7 @@ export default class EventPresenter {
       typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
+      onDeleteClick: this.#onDeleteClick,
     });
 
     //проверка были ли отрисованы компоненты
@@ -142,9 +143,15 @@ export default class EventPresenter {
   };
 
   /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
-  #onFormSubmit = (eventPointItem) => {
-    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, eventPointItem);
+  #onFormSubmit = (update) => {
+    const isMinorUpdate = !isDatesChange(this.#eventPointItem.dateFrom, update.dateFrom) && !isDatesChange(this.#eventPointItem.dateTo, update.dateTo);
+
+    this.#handleDataChange(UserAction.UPDATE_POINT, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, update);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #onDeleteClick = (eventPointItem) => {
+    this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.MINOR, eventPointItem);
   };
 }

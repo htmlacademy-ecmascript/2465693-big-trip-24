@@ -117,6 +117,9 @@ const sortByTime = (eventA, eventB) => {
   return eventBDuration - eventADuration;
 };
 
+//проверка дата изменена в форме редактирования
+const isDatesChange = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+
 export {
   capitalizeLetter,
   getRandomInteger,
@@ -131,4 +134,5 @@ export {
   sortByDay,
   sortByPrice,
   sortByTime,
+  isDatesChange,
 };

@@ -157,8 +157,9 @@ export default class FormEditView extends AbstractStatefulView {
 
   #handleFormSubmit = null;
   #handleRollupButtonClick = null;
+  #handleDeleteClick = null;
 
-  constructor({ eventPoint, allDestinations, allOffers, allOffersByType, typeOffers, onFormSubmit, onRollupButtonClick }) {
+  constructor({ eventPoint, allDestinations, allOffers, allOffersByType, typeOffers, onFormSubmit, onRollupButtonClick, onDeleteClick }) {
     /**super вызывает конструктор родительского класса*/
     super();
     this.#originalPoint = eventPoint;
@@ -169,6 +170,7 @@ export default class FormEditView extends AbstractStatefulView {
     this.#allOffersByType = allOffersByType;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupButtonClick = onRollupButtonClick;
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
@@ -206,6 +208,7 @@ export default class FormEditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeOptionHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationOptionHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteHandler);
 
     const offersElement = this.element.querySelector('.event__available-offers');
     if (offersElement) {
@@ -281,6 +284,11 @@ export default class FormEditView extends AbstractStatefulView {
       minDate: this._state.dateFrom, //дата, раньше которой нельзя выбрать дату
     });
   }
+
+  #formDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(FormEditView.parseStateToPoint(this._state));
+  };
 
   static parsePointToState(eventPoint) {
     if (eventPoint.dateFrom instanceof dayjs) {
