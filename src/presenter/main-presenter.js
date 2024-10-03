@@ -1,4 +1,4 @@
-import { MessageText, SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
@@ -15,11 +15,12 @@ export default class MainPresenter {
   #destinationsModel = null;
   #filterModel = null;
   #sortComponent = null;
-  #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
+  #messageComponent = null;
 
   #eventPresenter = new Map();
 
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel }) {
     this.#container = container;
@@ -34,9 +35,9 @@ export default class MainPresenter {
   }
 
   get eventPoints() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const eventPoints = this.#eventPointsModel.eventPoints;
-    const filteredPoints = filter[filterType](eventPoints);
+    const filteredPoints = filter[this.#filterType](eventPoints);
 
     switch (this.#currentSortType) {
       case SortType.TIME:
@@ -64,6 +65,9 @@ export default class MainPresenter {
 
   /**приватный метод для отрисовки сообщения на странице */
   #renderMessage() {
+    this.#messageComponent = new MessageView({
+      filterType: this.#filterType,
+    });
     render(this.#messageComponent, this.#container);
   }
 
@@ -90,8 +94,9 @@ export default class MainPresenter {
     this.#eventPresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#messageComponent);
-
+    if (this.#messageComponent) {
+      remove(this.#messageComponent);
+    }
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
