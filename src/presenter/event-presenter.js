@@ -51,7 +51,6 @@ export default class EventPresenter {
 
     this.#editEventPoint = new FormEditView({
       eventPoint: this.#eventPointItem,
-      allOffersByType: this.#offersModel.getOffersByType(eventPointItem.type),
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       allDestinations: this.#destinationsModel.destinations,
       allOffers: this.#offersModel.offers,

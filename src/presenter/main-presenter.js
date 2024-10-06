@@ -3,6 +3,7 @@ import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
 import EventPresenter from './event-presenter.js';
+import NewEventPresenter from './new-event-presenter.js';
 import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
 
 import { render, RenderPosition, remove } from '../framework/render.js';
@@ -18,16 +19,25 @@ export default class MainPresenter {
   #messageComponent = null;
 
   #eventPresenter = new Map();
+  #newEventPresenter = null;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel }) {
+  constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      container: this.#eventList.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewEventDestroy,
+    });
 
     //подписка на изменение модели
     this.#eventPointsModel.addObserver(this.#handleModelEvent);
@@ -49,8 +59,14 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#renderSort();
-    this.#renderEventsList();
+    this.#renderPage();
+  }
+
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterType = FilterType.EVERYTHING;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventPresenter.init();
   }
 
   /**приватный метод для отрисовки компонентов сортировки */
@@ -86,10 +102,12 @@ export default class MainPresenter {
   }
 
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
 
   #clearPage({ resetSortType = false } = {}) {
+    this.#newEventPresenter.destroy();
     this.#eventPresenter.forEach((presenter) => presenter.destroy());
     this.#eventPresenter.clear();
 

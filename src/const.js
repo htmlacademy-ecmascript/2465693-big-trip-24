@@ -53,4 +53,17 @@ const UserAction = {
   DELETE_POINT: 'DELETE_POINT',
 };
 
-export { SortType, availableSortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction };
+const START_TYPE = 'flight';
+
+const NEW_POINT = {
+  id: 0,
+  basePrice: '0',
+  dateFrom: null,
+  dateTo: null,
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: START_TYPE,
+};
+
+export { SortType, availableSortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE };
