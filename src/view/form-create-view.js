@@ -62,10 +62,6 @@ export default class FormCreateView extends AbstractStatefulView {
     return createNewFormViewTemplate({ eventPoint: this._state, destinations: this.#allDestinations, offers: this.#allOffers, typeOffers: this.#typeOffers });
   }
 
-  // reset(eventPoint) {
-  //   this.updateElement(FormCreateView.parsePointToState(eventPoint));
-  // }
-
   //перегружаем метод родителя, чтобы при удалении удалялся более не нужный календарь
   removeElement() {
     super.removeElement();

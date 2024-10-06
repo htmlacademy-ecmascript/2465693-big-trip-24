@@ -1,5 +1,6 @@
 import { capitalizeLetter, humanizeEventDueDate, replaceSpaceInName } from '../utils.js';
 import { DateFormat } from '../const.js';
+import he from 'he';
 
 //выбор типа события
 const createTypeItemTemplate = (type, isCheckedTypeClassName) => `
@@ -46,7 +47,7 @@ const createDestinationTemplate = (type, destination, destinations) => `
     <input class="event__input  event__input--destination"
       id="event-destination-1"
       type="text" name="event-destination"
-      value="${destination !== undefined ? destination.name : ''}"
+      value="${destination !== undefined ? he.encode(destination.name) : ''}" required
       list="destination-list-1">
     <datalist id="destination-list-1">
       ${createAvailableDestinationTemplateName(destinations)}
@@ -59,10 +60,10 @@ const eventTime = (eventDate) => humanizeEventDueDate(eventDate, DateFormat.EDIT
 const createDateTimeTemplate = (dateFrom, dateTo) => `
   <div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${eventTime(dateFrom)}">
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${eventTime(dateFrom)}" required>
     &mdash;
     <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${eventTime(dateTo)}">
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${eventTime(dateTo)}" required>
   </div>`;
 
 //выбор цены
@@ -72,7 +73,10 @@ const createPriceTemplate = (basePrice) => `
       <span class="visually-hidden">Price</span>
       &euro;
     </label>
-    <input class="event__input  event__input--price" id="event-price-1" name="event-price" value="${basePrice}">
+    <input class="event__input  event__input--price"
+    id="event-price-1"
+    name="event-price"
+    value="${he.encode(String(basePrice))}" onkeyup="this.value = this.value.replace(/[^0-9]/g,'');" required>
   </div>`;
 
 //секция офферов соответствующих типу события
