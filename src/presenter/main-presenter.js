@@ -1,11 +1,12 @@
-import { MessageText, SortType } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
 import EventPresenter from './event-presenter.js';
-import { updateItem, sortByDay, sortByPrice, sortByTime } from '../utils.js';
+import NewEventPresenter from './new-event-presenter.js';
+import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
 
-import { render, RenderPosition } from '../framework/render.js';
+import { render, RenderPosition, remove } from '../framework/render.js';
 
 export default class MainPresenter {
   #eventList = new EventListView();
@@ -13,34 +14,66 @@ export default class MainPresenter {
   #eventPointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #filterModel = null;
   #sortComponent = null;
-  #messageComponent = new MessageView({ message: MessageText.EVERYTHING });
+  #messageComponent = null;
 
-  #eventListPoints = [];
-  #eventPresenters = new Map();
+  #eventPresenter = new Map();
+  #newEventPresenter = null;
 
   #currentSortType = SortType.DAY;
-  #sourcedEventPoints = [];
+  #filterType = FilterType.EVERYTHING;
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel }) {
+  constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#filterModel = filterModel;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      container: this.#eventList.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewEventDestroy,
+    });
+
+    //подписка на изменение модели
+    this.#eventPointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  get eventPoints() {
+    this.#filterType = this.#filterModel.filter;
+    const eventPoints = this.#eventPointsModel.eventPoints;
+    const filteredPoints = filter[this.#filterType](eventPoints);
+
+    switch (this.#currentSortType) {
+      case SortType.TIME:
+        return filteredPoints.sort(sortByTime);
+      case SortType.PRICE:
+        return filteredPoints.sort(sortByPrice);
+    }
+    return filteredPoints.sort(sortByDay);
   }
 
   init() {
-    this.#eventListPoints = [...this.#eventPointsModel.eventPoints].sort(sortByDay);
-    this.#sourcedEventPoints = [...this.#eventPointsModel.eventPoints];
-    this.#renderSort();
-    this.#renderEventsList();
+    this.#renderPage();
+  }
+
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterType = FilterType.EVERYTHING;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventPresenter.init();
   }
 
   /**приватный метод для отрисовки компонентов сортировки */
   #renderSort() {
     this.#sortComponent = new SortView({
-      onSortTypeChange: this.#handleSortTypeChange,
       checkedSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange,
     });
 
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
@@ -48,21 +81,11 @@ export default class MainPresenter {
 
   /**приватный метод для отрисовки сообщения на странице */
   #renderMessage() {
+    this.#messageComponent = new MessageView({
+      filterType: this.#filterType,
+    });
     render(this.#messageComponent, this.#container);
   }
-
-  /**приватный метод для очистки точек событий */
-  #clearEventPoints() {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-  }
-
-  /**обработчик изменений в точке события */
-  #handleEventPointChange = (updatedEventPoint) => {
-    this.#eventListPoints = updateItem(this.#eventListPoints, updatedEventPoint);
-    this.#sourcedEventPoints = updateItem(this.#sourcedEventPoints, updatedEventPoint);
-    this.#eventPresenters.get(updatedEventPoint.id).init(updatedEventPoint);
-  };
 
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
   #renderEventPoint(eventPointItem) {
@@ -71,34 +94,70 @@ export default class MainPresenter {
       eventPointsModel: this.#eventPointsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handleEventPointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
     eventPresenter.init(eventPointItem);
-    this.#eventPresenters.set(eventPointItem.id, eventPresenter);
+    this.#eventPresenter.set(eventPointItem.id, eventPresenter);
   }
 
   #handleModeChange = () => {
-    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+    this.#newEventPresenter.destroy();
+    this.#eventPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  /**специфичные методы сортировки */
-  #sortEventPoints = (sortType) => {
-    switch (sortType) {
-      case SortType.DAY:
-        this.#eventListPoints.sort(sortByDay);
-        break;
-      case SortType.TIME:
-        this.#eventListPoints.sort(sortByTime);
-        break;
-      case SortType.PRICE:
-        this.#eventListPoints.sort(sortByPrice);
-        break;
-      default:
-        this.#eventListPoints = [...this.#sourcedEventPoints];
-    }
+  #clearPage({ resetSortType = false } = {}) {
+    this.#newEventPresenter.destroy();
+    this.#eventPresenter.forEach((presenter) => presenter.destroy());
+    this.#eventPresenter.clear();
 
-    this.#currentSortType = sortType;
+    remove(this.#sortComponent);
+    if (this.#messageComponent) {
+      remove(this.#messageComponent);
+    }
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  }
+
+  /**обработчик реагирующий на действия пользователя, Здесь будем вызывать обновление модели.
+   * @actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+   * @updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+   * @update обновленные данные
+   */
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#eventPointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#eventPointsModel.addEventPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#eventPointsModel.deletePoint(updateType, update);
+        break;
+    }
+  };
+
+  /**обработчик срабатывающий при изменении модели. В зависимости от типа изменений решаем, что делать:
+   *- обновить часть списка (например, когда поменялся Destination )
+   *- обновить список (например, когда событие удалено или добавилось новое)
+   *- обновить всю доску (например, при переключении фильтра)
+   */
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearPage();
+        this.#renderPage();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearPage({ resetSortType: true });
+        this.#renderPage();
+        break;
+    }
   };
 
   /**обработчик смены сортировки */
@@ -106,23 +165,29 @@ export default class MainPresenter {
     if (this.#currentSortType === sortType) {
       return {};
     }
-    this.#sortEventPoints(sortType);
-    this.#clearEventPoints();
-    this.#renderEventsList();
+
+    this.#currentSortType = sortType;
+    this.#clearPage();
+    this.#renderPage();
   };
+
+  #renderEventPoints(eventPoints) {
+    eventPoints.forEach((eventPoint) => this.#renderEventPoint(eventPoint));
+  }
 
   /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
     render(this.#eventList, this.#container);
+    this.#renderEventPoints(this.eventPoints);
+  }
 
+  #renderPage() {
     //проверяем, если событий нет, то выводим сообщение
-    if (!this.#eventListPoints.length) {
+    if (!this.eventPoints.length) {
       this.#renderMessage();
       return;
     }
-
-    for (let i = 0; i < this.#eventListPoints.length; i++) {
-      this.#renderEventPoint(this.#eventListPoints[i]);
-    }
+    this.#renderSort();
+    this.#renderEventsList();
   }
 }

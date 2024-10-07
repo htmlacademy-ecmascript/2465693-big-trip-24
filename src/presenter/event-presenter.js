@@ -1,9 +1,13 @@
 import { render, replace, remove } from '../framework/render.js';
+import { UpdateType, UserAction } from '../const.js';
 import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
-import { isEscapeKey } from '../utils.js';
+import { isEscapeKey, isDatesChange } from '../utils.js';
 
-//режим точки события. DEFAULT - просмотр, EDITING - редактирование
+/**режим точки события.
+ * @DEFAULT - просмотр
+ * @EDITING - редактирование
+ */
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
@@ -47,13 +51,13 @@ export default class EventPresenter {
 
     this.#editEventPoint = new FormEditView({
       eventPoint: this.#eventPointItem,
-      allOffersByType: this.#offersModel.getOffersByType(eventPointItem.type),
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       allDestinations: this.#destinationsModel.destinations,
       allOffers: this.#offersModel.offers,
       typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
+      onDeleteClick: this.#onDeleteClick,
     });
 
     //проверка были ли отрисованы компоненты
@@ -102,9 +106,13 @@ export default class EventPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  /**функция добавления в избранное */
+  /**функция добавления в избранное
+   * @UserAction UPDATE_POINT действие которое мы хотим выполнить
+   * @Update Type.MINOR тип обновления
+   * @{...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite } данные которые необходимо обновить
+   */
   #onFavoriteClick = () => {
-    this.#handleDataChange({ ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
   };
 
   /**функция replace framework'a , по замене точки на форму редактирования*/
@@ -122,17 +130,27 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  /**функция по замене формы редактирования на точку */
+  /**функция по замене формы редактирования на точку
+   * @eventPointItem точка события
+   * @UserAction UPDATE_POINT действие которое мы хотим выполнить
+   * @Update Type.MINOR тип обновления
+   */
   #onRollupButtonClick = (eventPointItem) => {
-    this.#handleDataChange(eventPointItem);
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
-  #onFormSubmit = (eventPointItem) => {
-    this.#handleDataChange(eventPointItem);
+  #onFormSubmit = (update) => {
+    const isMinorUpdate = !isDatesChange(this.#eventPointItem.dateFrom, update.dateFrom) && !isDatesChange(this.#eventPointItem.dateTo, update.dateTo);
+
+    this.#handleDataChange(UserAction.UPDATE_POINT, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, update);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #onDeleteClick = (eventPointItem) => {
+    this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.MINOR, eventPointItem);
   };
 }

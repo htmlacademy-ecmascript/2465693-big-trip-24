@@ -41,4 +41,29 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { SortType, availableSortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType };
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const START_TYPE = 'flight';
+
+const NEW_POINT = {
+  id: 0,
+  basePrice: '0',
+  dateFrom: null,
+  dateTo: null,
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: START_TYPE,
+};
+
+export { SortType, availableSortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE };
