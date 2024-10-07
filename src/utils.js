@@ -107,7 +107,7 @@ const replaceSpaceInName = (string) => {
   return string.replace(relaceSymbol, '-');
 };
 
-const sortByDay = (eventA, eventB) => dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
+const sortByDay = (eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom);
 
 const sortByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
 
