@@ -33,7 +33,8 @@ export default class EventPointsModel extends Observable {
   deletePoint(updateType, update) {
     const index = this.#eventPoints.findIndex((eventPoint) => eventPoint.id === update.id);
 
-    if (index === -1) {
+    //!~index аналог index === -1
+    if (!~index) {
       throw new Error('Can not delete unexisting point');
     }
 
