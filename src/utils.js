@@ -70,7 +70,7 @@ const getDuration = (dateBegin, dateEnd) => {
 };
 
 //нажата ли кнопка Esc
-const isEscapeKey = (evt) => evt.key === 'Escape';
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 //является прошедшей датой
 const isPastDate = (dueDate) => {
