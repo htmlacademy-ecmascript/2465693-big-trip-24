@@ -80,10 +80,11 @@ const isPastDate = (dueDate) => {
 };
 
 //является текущей датой
-const isPresentDate = (dueDate) => {
+const isPresentDate = (eventPoint) => {
   const currentDate = dayjs();
-  const targetDate = dayjs(dueDate);
-  return targetDate.isSame(currentDate, 'day');
+  const targetStartDate = dayjs(eventPoint.dateFrom);
+  const targetEndDate = dayjs(eventPoint.dateTo);
+  return currentDate.isAfter(targetStartDate) && currentDate.isBefore(targetEndDate);
 };
 
 //является будующей датой
@@ -95,8 +96,8 @@ const isFutureDate = (dueDate) => {
 
 const filter = {
   [FilterType.EVERYTHING]: (eventPoints) => eventPoints,
-  [FilterType.FUTURE]: (eventPoints) => eventPoints.filter((eventPoint) => isFutureDate(eventPoint.dateTo)),
-  [FilterType.PRESENT]: (eventPoints) => eventPoints.filter((eventPoint) => isPresentDate(eventPoint.dateTo)),
+  [FilterType.FUTURE]: (eventPoints) => eventPoints.filter((eventPoint) => isFutureDate(eventPoint.dateFrom)),
+  [FilterType.PRESENT]: (eventPoints) => eventPoints.filter((eventPoint) => isPresentDate(eventPoint)),
   [FilterType.PAST]: (eventPoints) => eventPoints.filter((eventPoint) => isPastDate(eventPoint.dateTo)),
 };
 
