@@ -2,7 +2,17 @@ import Observable from '../framework/observable.js';
 import { NUMBER_LOCATION_POINTS } from '../const.js';
 import { getRandomEventPoint } from '../mock/points.js';
 export default class EventPointsModel extends Observable {
+  #eventPointsApiService = null;
   #eventPoints = Array.from({ length: NUMBER_LOCATION_POINTS }, getRandomEventPoint);
+
+  constructor({ eventPointsApiService }) {
+    super();
+    this.#eventPointsApiService = eventPointsApiService;
+    this.#eventPointsApiService.eventPoints.then((eventPoints) => {
+      // eslint-disable-next-line no-console
+      console.log(eventPoints);
+    });
+  }
 
   get eventPoints() {
     return this.#eventPoints;

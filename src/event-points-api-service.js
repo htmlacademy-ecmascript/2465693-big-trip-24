@@ -6,17 +6,17 @@ const Method = {
 };
 
 //создаем класс PointsApiService в котором будет реализовано взаимодействие с сервером
-export default class PointsApiService extends ApiService {
+export default class EventPointsApiService extends ApiService {
   //получаем от сервера все точки
-  get points() {
+  get eventPoints() {
     return this._load({ url: 'points' }).then(ApiService.parseResponse);
   }
 
-  async updatePoint(point) {
+  async updatePoint(eventPoint) {
     const response = await this._load({
-      url: `points/${point.id}`,
+      url: `points/${eventPoint.id}`,
       method: Method.PUT,
-      body: JSON.stringify(point),
+      body: JSON.stringify(eventPoint),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     });
 

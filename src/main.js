@@ -7,6 +7,10 @@ import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import { render } from './framework/render.js';
+import EventPointsApiService from './event-points-api-service.js';
+
+const AUTHORIZATION = 'Basic vs5u547ok13579w';
+const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
 const tripMainElement = document.querySelector('.trip-main');
 const filterControlElement = document.querySelector('.trip-controls__filters');
@@ -14,7 +18,9 @@ const tripEventsElement = document.querySelector('.trip-events');
 
 const newEventButtonComponent = new NewEventButtonView({ onButtonClick: handleNewEventButtonClick });
 
-const eventPointsModel = new EventPointsModel();
+const eventPointsModel = new EventPointsModel({
+  eventPointsApiService: new EventPointsApiService(END_POINT, AUTHORIZATION),
+});
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 const filterModel = new FilterModel();
