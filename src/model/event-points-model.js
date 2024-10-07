@@ -1,17 +1,21 @@
 import Observable from '../framework/observable.js';
-import { NUMBER_LOCATION_POINTS } from '../const.js';
-import { getRandomEventPoint } from '../mock/points.js';
 export default class EventPointsModel extends Observable {
   #eventPointsApiService = null;
-  #eventPoints = Array.from({ length: NUMBER_LOCATION_POINTS }, getRandomEventPoint);
+  #eventPoints = [];
 
   constructor({ eventPointsApiService }) {
     super();
     this.#eventPointsApiService = eventPointsApiService;
-    this.#eventPointsApiService.eventPoints.then((eventPoints) => {
-      // eslint-disable-next-line no-console
-      console.log(eventPoints.map(this.#adaptToClient));
-    });
+  }
+
+  //метод Init, запрос на получение данных
+  async init() {
+    try {
+      const eventPoints = await this.#eventPointsApiService.eventPoints; //получаем список событий
+      this.#eventPoints = eventPoints.map(this.#adaptToClient); //преобразование задач к нужному виду, применяя адаптер
+    } catch (err) {
+      this.#eventPoints = [];
+    }
   }
 
   get eventPoints() {
@@ -23,7 +27,8 @@ export default class EventPointsModel extends Observable {
     const index = this.#eventPoints.findIndex((eventPoint) => eventPoint.id === update.id);
 
     //если сбоите не нашлось то выводим
-    if (index === -1) {
+    //!~index аналог index === -1
+    if (!~index) {
       throw new Error('Can not update unexisting point');
     }
 

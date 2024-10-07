@@ -1,5 +1,3 @@
-const NUMBER_LOCATION_POINTS = 3;
-
 const TimeConverter = {
   HOURS_IN_DAY: 24,
   MINUTES_IN_HOUR: 60,
@@ -66,4 +64,4 @@ const NEW_POINT = {
   type: START_TYPE,
 };
 
-export { SortType, availableSortType, NUMBER_LOCATION_POINTS, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE };
+export { SortType, availableSortType, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE };

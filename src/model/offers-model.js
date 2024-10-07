@@ -1,7 +1,19 @@
-import { arrayOffers } from '../mock/offers.js';
-
 export default class OffersModel {
-  #offers = arrayOffers;
+  #offers = [];
+  #eventPointsApiService = null;
+
+  constructor({ eventPointsApiService }) {
+    this.#eventPointsApiService = eventPointsApiService;
+  }
+
+  async init() {
+    try {
+      const offers = await this.#eventPointsApiService.offers;
+      this.#offers = offers;
+    } catch (err) {
+      this.#offers = [];
+    }
+  }
 
   get offers() {
     return this.#offers;

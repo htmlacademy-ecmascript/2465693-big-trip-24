@@ -12,6 +12,16 @@ export default class EventPointsApiService extends ApiService {
     return this._load({ url: 'points' }).then(ApiService.parseResponse);
   }
 
+  //получаем от сервера все офферы
+  get offers() {
+    return this._load({ url: 'offers' }).then(ApiService.parseResponse);
+  }
+
+  //получаем от сервера все дестинэйшены
+  get destinations() {
+    return this._load({ url: 'destinations' }).then(ApiService.parseResponse);
+  }
+
   async updatePoint(eventPoint) {
     const response = await this._load({
       url: `points/${eventPoint.id}`,
