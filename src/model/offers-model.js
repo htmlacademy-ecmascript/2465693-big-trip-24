@@ -1,3 +1,5 @@
+import { UpdateType } from '../const';
+
 export default class OffersModel {
   #offers = [];
   #eventPointsApiService = null;
@@ -13,6 +15,8 @@ export default class OffersModel {
     } catch (err) {
       this.#offers = [];
     }
+    //уведомляет, что модель обновилась
+    this._notify(UpdateType.INIT);
   }
 
   get offers() {

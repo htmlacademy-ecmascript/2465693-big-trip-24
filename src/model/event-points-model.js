@@ -1,4 +1,5 @@
 import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 export default class EventPointsModel extends Observable {
   #eventPointsApiService = null;
   #eventPoints = [];
@@ -16,6 +17,7 @@ export default class EventPointsModel extends Observable {
     } catch (err) {
       this.#eventPoints = [];
     }
+    this._notify(UpdateType.INIT);
   }
 
   get eventPoints() {

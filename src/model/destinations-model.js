@@ -1,3 +1,4 @@
+import { UpdateType } from '../const';
 export default class DestinationsModel {
   #destinations = [];
   #eventPointsApiService = null;
@@ -13,6 +14,7 @@ export default class DestinationsModel {
     } catch (err) {
       this.#destinations = [];
     }
+    this._notify(UpdateType.INIT);
   }
 
   get destinations() {
