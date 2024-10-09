@@ -18,9 +18,10 @@ const tripEventsElement = document.querySelector('.trip-events');
 
 const newEventButtonComponent = new NewEventButtonView({ onButtonClick: handleNewEventButtonClick });
 
-const eventPointsModel = new EventPointsModel({ eventPointsApiService: new EventPointsApiService(END_POINT, AUTHORIZATION) });
-const offersModel = new OffersModel({ eventPointsApiService: new EventPointsApiService(END_POINT, AUTHORIZATION) });
-const destinationsModel = new DestinationsModel({ eventPointsApiService: new EventPointsApiService(END_POINT, AUTHORIZATION) });
+const service = new EventPointsApiService(END_POINT, AUTHORIZATION);
+const offersModel = new OffersModel(service);
+const eventPointsModel = new EventPointsModel(service);
+const destinationsModel = new DestinationsModel(service);
 const filterModel = new FilterModel();
 
 const tripInfoPresenter = new TripInfoPresenter({ container: tripMainElement });
@@ -44,10 +45,10 @@ function handleNewEventButtonClick() {
 }
 
 render(newEventButtonComponent, tripMainElement);
+offersModel.init();
+destinationsModel.init();
+eventPointsModel.init();
 
 tripInfoPresenter.init();
 filterPresenter.init();
 mainPresenter.init();
-eventPointsModel.init();
-offersModel.init();
-destinationsModel.init();

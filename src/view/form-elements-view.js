@@ -127,7 +127,7 @@ const createPictureTemplate = (pictures) =>
     .join('');
 
 const createSectionDestinationTemplate = (destination) => {
-  if (destination === undefined) {
+  if (destination === undefined || destination.description === '') {
     return '';
   }
 

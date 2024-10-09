@@ -1,22 +1,23 @@
 import Observable from '../framework/observable.js';
 import { UpdateType } from '../const.js';
 export default class EventPointsModel extends Observable {
-  #eventPointsApiService = null;
+  #service = null;
   #eventPoints = [];
 
-  constructor({ eventPointsApiService }) {
+  constructor(service) {
     super();
-    this.#eventPointsApiService = eventPointsApiService;
+    this.#service = service;
   }
 
   //метод Init, запрос на получение данных
   async init() {
     try {
-      const eventPoints = await this.#eventPointsApiService.eventPoints; //получаем список событий
+      const eventPoints = await this.#service.eventPoints; //получаем список событий
       this.#eventPoints = eventPoints.map(this.#adaptToClient); //преобразование задач к нужному виду, применяя адаптер
     } catch (err) {
       this.#eventPoints = [];
     }
+    //уведомляет, что модель обновилась
     this._notify(UpdateType.INIT);
   }
 
@@ -25,7 +26,7 @@ export default class EventPointsModel extends Observable {
   }
 
   //метод обновления точки события
-  updatePoint(updateType, update) {
+  async updatePoint(updateType, update) {
     const index = this.#eventPoints.findIndex((eventPoint) => eventPoint.id === update.id);
 
     //если сбоите не нашлось то выводим
@@ -64,8 +65,8 @@ export default class EventPointsModel extends Observable {
   #adaptToClient(eventPoint) {
     const adaptedEventPoint = {
       ...eventPoint,
-      DateFrom: eventPoint['date_from'] !== null ? new Date(eventPoint['date_from']) : eventPoint['date_from'], // На клиенте дата хранится как экземпляр Date
-      DateTo: eventPoint['date_to'] !== null ? new Date(eventPoint['date_to']) : eventPoint['date_to'],
+      dateFrom: eventPoint['date_from'] !== null ? new Date(eventPoint['date_from']) : eventPoint['date_from'], // На клиенте дата хранится как экземпляр Date
+      dateTo: eventPoint['date_to'] !== null ? new Date(eventPoint['date_to']) : eventPoint['date_to'],
       basePrice: eventPoint['base_price'],
       isFavorite: eventPoint['is_favorite'],
     };

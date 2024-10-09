@@ -2,6 +2,7 @@ import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
+import LoadingView from '../view/loading-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
@@ -17,12 +18,14 @@ export default class MainPresenter {
   #filterModel = null;
   #sortComponent = null;
   #messageComponent = null;
+  #Loadingcomponent = new LoadingView();
 
   #eventPresenter = new Map();
   #newEventPresenter = null;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
     this.#container = container;
@@ -111,6 +114,7 @@ export default class MainPresenter {
     this.#eventPresenter.forEach((presenter) => presenter.destroy());
     this.#eventPresenter.clear();
 
+    remove(this.#Loadingcomponent);
     remove(this.#sortComponent);
     if (this.#messageComponent) {
       remove(this.#messageComponent);
@@ -157,6 +161,11 @@ export default class MainPresenter {
         this.#clearPage({ resetSortType: true });
         this.#renderPage();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#Loadingcomponent);
+        this.#renderPage();
+        break;
     }
   };
 
@@ -175,6 +184,10 @@ export default class MainPresenter {
     eventPoints.forEach((eventPoint) => this.#renderEventPoint(eventPoint));
   }
 
+  #renderLoading() {
+    render(this.#Loadingcomponent, this.#container);
+  }
+
   /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
     render(this.#eventList, this.#container);
@@ -182,6 +195,11 @@ export default class MainPresenter {
   }
 
   #renderPage() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     //проверяем, если событий нет, то выводим сообщение
     if (!this.eventPoints.length) {
       this.#renderMessage();

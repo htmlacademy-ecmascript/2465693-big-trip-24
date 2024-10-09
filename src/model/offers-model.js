@@ -1,22 +1,18 @@
-import { UpdateType } from '../const';
-
 export default class OffersModel {
   #offers = [];
-  #eventPointsApiService = null;
+  #service = null;
 
-  constructor({ eventPointsApiService }) {
-    this.#eventPointsApiService = eventPointsApiService;
+  constructor(service) {
+    this.#service = service;
   }
 
   async init() {
     try {
-      const offers = await this.#eventPointsApiService.offers;
+      const offers = await this.#service.offers;
       this.#offers = offers;
     } catch (err) {
       this.#offers = [];
     }
-    //уведомляет, что модель обновилась
-    this._notify(UpdateType.INIT);
   }
 
   get offers() {

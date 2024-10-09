@@ -1,20 +1,18 @@
-import { UpdateType } from '../const';
 export default class DestinationsModel {
   #destinations = [];
-  #eventPointsApiService = null;
+  #service = null;
 
-  constructor({ eventPointsApiService }) {
-    this.#eventPointsApiService = eventPointsApiService;
+  constructor(service) {
+    this.#service = service;
   }
 
   async init() {
     try {
-      const destinations = await this.#eventPointsApiService.destinations;
+      const destinations = await this.#service.destinations;
       this.#destinations = destinations;
     } catch (err) {
       this.#destinations = [];
     }
-    this._notify(UpdateType.INIT);
   }
 
   get destinations() {
