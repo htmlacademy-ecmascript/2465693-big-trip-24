@@ -53,7 +53,7 @@ export default class EventPresenter {
       eventPoint: this.#eventPointItem,
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       allDestinations: this.#destinationsModel.destinations,
-      allOffers: this.#offersModel.offers,
+      offers: this.#offersModel.offers,
       typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#onFormSubmit,
       onRollupButtonClick: this.#onRollupButtonClick,
@@ -112,7 +112,7 @@ export default class EventPresenter {
    * @{...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite } данные которые необходимо обновить
    */
   #onFavoriteClick = () => {
-    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
   };
 
   /**функция replace framework'a , по замене точки на форму редактирования*/
@@ -147,7 +147,6 @@ export default class EventPresenter {
 
     this.#handleDataChange(UserAction.UPDATE_POINT, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, update);
     this.#replaceEditToView();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #onDeleteClick = (eventPointItem) => {

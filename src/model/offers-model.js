@@ -1,7 +1,19 @@
-import { arrayOffers } from '../mock/offers.js';
-
 export default class OffersModel {
-  #offers = arrayOffers;
+  #offers = [];
+  #service = null;
+
+  constructor(service) {
+    this.#service = service;
+  }
+
+  async init() {
+    try {
+      const offers = await this.#service.offers;
+      this.#offers = offers;
+    } catch (err) {
+      this.#offers = [];
+    }
+  }
 
   get offers() {
     return this.#offers;

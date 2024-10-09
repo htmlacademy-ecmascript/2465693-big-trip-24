@@ -1,6 +1,7 @@
 import FormCreateView from '../view/form-create-view.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { UpdateType, UserAction, NEW_POINT } from '../const.js';
+import { isEscapeKey } from '../utils.js';
 import { nanoid } from 'nanoid';
 
 export default class NewEventPresenter {
@@ -27,7 +28,7 @@ export default class NewEventPresenter {
     this.#addComponent = new FormCreateView({
       eventPoint: this.#eventPoint,
       allDestinations: this.#destinationsModel.destinations,
-      allOffers: this.#offersModel.offers,
+      offers: this.#offersModel.offers,
       typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#handleFormSubmit,
       onCancelClick: this.#handleCancelClick,
@@ -61,7 +62,7 @@ export default class NewEventPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscapeKey(evt)) {
       evt.preventDefault();
       this.destroy();
     }

@@ -41,7 +41,7 @@ export default class FormEditView extends AbstractStatefulView {
   #originalPoint = null;
   #pointDestination = null;
   #allDestinations = [];
-  #allOffers = [];
+  #offers = [];
   #typeOffers = [];
   #datepickerStart = null;
   #datepickerEnd = null;
@@ -50,13 +50,13 @@ export default class FormEditView extends AbstractStatefulView {
   #handleRollupButtonClick = null;
   #handleDeleteClick = null;
 
-  constructor({ eventPoint, allDestinations, allOffers, typeOffers, onFormSubmit, onRollupButtonClick, onDeleteClick }) {
+  constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onRollupButtonClick, onDeleteClick }) {
     /**super вызывает конструктор родительского класса*/
     super();
     this.#originalPoint = eventPoint;
     this._setState(FormEditView.parsePointToState(eventPoint));
     this.#allDestinations = allDestinations;
-    this.#allOffers = allOffers;
+    this.#offers = offers;
     this.#typeOffers = typeOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupButtonClick = onRollupButtonClick;
@@ -68,7 +68,7 @@ export default class FormEditView extends AbstractStatefulView {
     return createNewFormEditViewTemplate({
       eventPoint: this._state,
       destinations: this.#allDestinations,
-      offers: this.#allOffers,
+      offers: this.#offers,
       typeOffers: this.#typeOffers,
     });
   }
@@ -116,7 +116,7 @@ export default class FormEditView extends AbstractStatefulView {
   };
 
   #typeOptionHandler = (evt) => {
-    this.updateElement({ type: evt.target.value, allOffers: [] });
+    this.updateElement({ type: evt.target.value, offers: [] });
   };
 
   #destinationOptionHandler = (evt) => {
