@@ -43,7 +43,7 @@ export default class EventPointsApiService extends ApiService {
       /* eslint-disable */
       date_from: eventPoint.dateFrom instanceof Date ? eventPoint.dateFrom.toISOString() : null, // На сервере дата хранится в ISO формате
       date_to: eventPoint.dateFrom instanceof Date ? eventPoint.dateTo.toISOString() : null,
-      base_price: eventPoint.basePrice,
+      base_price: Number(eventPoint.basePrice),
       is_favorite: eventPoint.isFavorite,
       /* eslint-enable */
     };

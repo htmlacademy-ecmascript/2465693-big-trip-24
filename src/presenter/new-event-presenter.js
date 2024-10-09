@@ -28,7 +28,7 @@ export default class NewEventPresenter {
     this.#addComponent = new FormCreateView({
       eventPoint: this.#eventPoint,
       allDestinations: this.#destinationsModel.destinations,
-      allOffers: this.#offersModel.offers,
+      offers: this.#offersModel.offers,
       typeOffers: this.#offersModel.getOffersType(),
       onFormSubmit: this.#handleFormSubmit,
       onCancelClick: this.#handleCancelClick,

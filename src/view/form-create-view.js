@@ -37,7 +37,7 @@ const createNewFormViewTemplate = ({ eventPoint, destinations, offers, typeOffer
 export default class FormCreateView extends AbstractStatefulView {
   #eventPoint = null;
   #allDestinations = [];
-  #allOffers = [];
+  #offers = [];
   #typeOffers = [];
 
   #handleFormSubmit = null;
@@ -46,12 +46,12 @@ export default class FormCreateView extends AbstractStatefulView {
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor({ eventPoint, allDestinations, allOffers, typeOffers, onFormSubmit, onCancelClick }) {
+  constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onCancelClick }) {
     super();
     this._setState(FormCreateView.parsePointToState(eventPoint));
     this.#eventPoint = eventPoint;
     this.#allDestinations = allDestinations;
-    this.#allOffers = allOffers;
+    this.#offers = offers;
     this.#typeOffers = typeOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCancelClick = onCancelClick;
@@ -59,7 +59,7 @@ export default class FormCreateView extends AbstractStatefulView {
   }
 
   get template() {
-    return createNewFormViewTemplate({ eventPoint: this._state, destinations: this.#allDestinations, offers: this.#allOffers, typeOffers: this.#typeOffers });
+    return createNewFormViewTemplate({ eventPoint: this._state, destinations: this.#allDestinations, offers: this.#offers, typeOffers: this.#typeOffers });
   }
 
   //перегружаем метод родителя, чтобы при удалении удалялся более не нужный календарь
@@ -105,7 +105,7 @@ export default class FormCreateView extends AbstractStatefulView {
   };
 
   #typeOptionHandler = (evt) => {
-    this.updateElement({ type: evt.target.value, allOffers: [] });
+    this.updateElement({ type: evt.target.value, offers: [] });
   };
 
   #destinationOptionHandler = (evt) => {
