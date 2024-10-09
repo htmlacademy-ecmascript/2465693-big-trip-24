@@ -35,9 +35,15 @@ export default class EventPointsModel extends Observable {
       throw new Error('Can not update unexisting point');
     }
 
-    this.#eventPoints = [...this.#eventPoints.slice(0, index), update, ...this.#eventPoints.slice(index + 1)];
-    //уведомляем всех подписчиков о случившемся событии
-    this._notify(updateType, update);
+    try {
+      const response = await this.#service.updatePoint(update);
+      const updatePoint = this.#adaptToClient(response);
+      this.#eventPoints = [...this.#eventPoints.slice(0, index), updatePoint, ...this.#eventPoints.slice(index + 1)];
+      //уведомляем всех подписчиков о случившемся событии
+      this._notify(updateType, updatePoint);
+    } catch (err) {
+      throw new Error('Can not update point');
+    }
   }
 
   //метод добавления новой точки события

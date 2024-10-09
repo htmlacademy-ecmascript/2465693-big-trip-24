@@ -44,10 +44,11 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-offersModel.init();
-destinationsModel.init();
-eventPointsModel.init().finally(() => {
-  render(newEventButtonComponent, tripMainElement);
+//инициализация evenPointsModel будет выполняться после успешной инициализации offersModel и destinationModel
+Promise.all([offersModel.init(), destinationsModel.init()]).then(() => {
+  eventPointsModel.init().finally(() => {
+    render(newEventButtonComponent, tripMainElement);
+  });
 });
 
 tripInfoPresenter.init();
