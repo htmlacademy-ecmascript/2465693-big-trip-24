@@ -2,8 +2,6 @@ import FormCreateView from '../view/form-create-view.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { UpdateType, UserAction, NEW_POINT } from '../const.js';
 import { isEscapeKey } from '../utils.js';
-import { nanoid } from 'nanoid';
-
 export default class NewEventPresenter {
   #eventPoint = NEW_POINT;
   #eventListContainer = null;
@@ -53,7 +51,7 @@ export default class NewEventPresenter {
   }
 
   #handleFormSubmit = (eventPoint) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, { ...eventPoint, id: nanoid() });
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint);
     this.destroy();
   };
 

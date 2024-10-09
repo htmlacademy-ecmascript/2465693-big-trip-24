@@ -135,7 +135,7 @@ export default class MainPresenter {
         this.#eventPointsModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this.#eventPointsModel.addEventPoint(updateType, update);
+        this.#eventPointsModel.addPoint(updateType, update);
         break;
       case UserAction.DELETE_POINT:
         this.#eventPointsModel.deletePoint(updateType, update);

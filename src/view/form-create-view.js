@@ -162,8 +162,7 @@ export default class FormCreateView extends AbstractStatefulView {
 
   //метод конвертации, "обогащаем" двумя новыми элементами id и isChecked
   static parsePointToState(eventPoint) {
-    eventPoint.offers.forEach((offer, index) => {
-      offer.id = index;
+    eventPoint.offers.forEach((offer) => {
       offer.isChecked = false;
     });
     return eventPoint;
