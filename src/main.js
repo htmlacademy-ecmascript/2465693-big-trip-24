@@ -44,10 +44,11 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, tripMainElement);
 offersModel.init();
 destinationsModel.init();
-eventPointsModel.init();
+eventPointsModel.init().finally(() => {
+  render(newEventButtonComponent, tripMainElement);
+});
 
 tripInfoPresenter.init();
 filterPresenter.init();
