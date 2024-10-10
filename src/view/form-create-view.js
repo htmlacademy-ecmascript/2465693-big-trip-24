@@ -48,8 +48,8 @@ export default class FormCreateView extends AbstractStatefulView {
 
   constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onCancelClick }) {
     super();
-    this._setState(FormCreateView.parsePointToState(eventPoint));
     this.#eventPoint = eventPoint;
+    this._setState(FormCreateView.parsePointToState(eventPoint));
     this.#allDestinations = allDestinations;
     this.#offers = offers;
     this.#typeOffers = typeOffers;
@@ -84,11 +84,7 @@ export default class FormCreateView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationOptionHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelHandler);
-
-    const offersElement = this.element.querySelector('.event__available-offers');
-    if (offersElement) {
-      offersElement.addEventListener('change', this.#offersChangeHandler);
-    }
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
 
     this.#setDatepickerStart();
     this.#setDatepickerEnd();

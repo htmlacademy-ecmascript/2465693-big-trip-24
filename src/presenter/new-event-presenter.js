@@ -51,14 +51,14 @@ export default class NewEventPresenter {
   }
 
   setSaving() {
-    this.this.#addComponent.updateElement({
+    this.#addComponent.updateElement({
       isDisabled: true,
       isSaving: true,
     });
   }
 
   #handleFormSubmit = (eventPoint) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint);
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint); //**** */
   };
 
   #handleCancelClick = () => {

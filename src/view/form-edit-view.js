@@ -183,7 +183,8 @@ export default class FormEditView extends AbstractStatefulView {
 
   //метод конвертации
   static parsePointToState(eventPoint) {
-    return { ...eventPoint, isDisabled: false, isSaving: false, isDeleting: false };
+    const point = { ...eventPoint, isDisabled: false, isSaving: false, isDeleting: false };
+    return point;
   }
 
   static parseStateToPoint(state) {

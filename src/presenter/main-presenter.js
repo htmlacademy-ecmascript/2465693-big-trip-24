@@ -132,12 +132,15 @@ export default class MainPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this.#eventPresenter.get(update.id).setSaving();
         this.#eventPointsModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
+        this.#newEventPresenter.setSaving();
         this.#eventPointsModel.addPoint(updateType, update);
         break;
       case UserAction.DELETE_POINT:
+        this.#eventPresenter.get(update.id).setDeleting();
         this.#eventPointsModel.deletePoint(updateType, update);
         break;
     }
