@@ -51,7 +51,7 @@ export default class EventPointsModel extends Observable {
     try {
       const response = await this.#service.addPoint(update);
       const newPoint = this.#adaptToClient(response);
-      this.#eventPoints = [update, ...this.#eventPoints];
+      this.#eventPoints = [newPoint, ...this.#eventPoints];
       this._notify(updateType, newPoint);
     } catch (err) {
       throw new Error('Can not add point');
