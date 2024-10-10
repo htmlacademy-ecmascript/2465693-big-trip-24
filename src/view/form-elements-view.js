@@ -10,7 +10,7 @@ const createTypeItemTemplate = (type, isCheckedTypeClassName) => `
   </div>
 `;
 
-const createEventTypeTemplate = (type, typeOffers) => {
+const createEventTypeTemplate = (type, typeOffers, isDisabled) => {
   const createAvailableTypes = typeOffers
     .map((item) => {
       const isCheckedTypeClassName = item === type ? 'checked' : '';
@@ -24,7 +24,7 @@ const createEventTypeTemplate = (type, typeOffers) => {
         <span class="visually-hidden">Choose event type</span>
         <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
       </label>
-      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
       <div class="event__type-list">
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
@@ -35,11 +35,11 @@ const createEventTypeTemplate = (type, typeOffers) => {
 };
 
 //выбор точки события
-function createAvailableDestinationTemplateName(destinations) {
-  return destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
+function createAvailableDestinationTemplateName(destinations, isDisabled) {
+  return destinations.map((destination) => `<option value="${destination.name}" ${isDisabled ? 'disabled' : ''}></option>`).join('');
 }
 
-const createDestinationTemplate = (type, destination, destinations) => `
+const createDestinationTemplate = (type, destination, destinations, isDisabled) => `
   <div class="event__field-group  event__field-group--destination">
     <label class="event__label  event__type-output" for="event-destination-1">
       ${capitalizeLetter(type)}
@@ -50,24 +50,26 @@ const createDestinationTemplate = (type, destination, destinations) => `
       value="${destination !== undefined ? he.encode(destination.name) : ''}" required
       list="destination-list-1">
     <datalist id="destination-list-1">
-      ${createAvailableDestinationTemplateName(destinations)}
+      ${createAvailableDestinationTemplateName(destinations, isDisabled)}
     </datalist>
   </div>`;
 
 //выбор даты
 const eventTime = (eventDate) => humanizeEventDueDate(eventDate, DateFormat.EDIT_DATE);
 
-const createDateTimeTemplate = (dateFrom, dateTo) => `
+const createDateTimeTemplate = (dateFrom, dateTo, isDisabled) => `
   <div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${eventTime(dateFrom)}" required>
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${eventTime(dateFrom)}" ${
+  isDisabled ? 'disabled' : ''
+} required>
     &mdash;
     <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${eventTime(dateTo)}" required>
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${eventTime(dateTo)}" ${isDisabled ? 'disabled' : ''} required>
   </div>`;
 
 //выбор цены
-const createPriceTemplate = (basePrice) => `
+const createPriceTemplate = (basePrice, isDisabled) => `
   <div class="event__field-group  event__field-group--price">
     <label class="event__label" for="event-price-1">
       <span class="visually-hidden">Price</span>
@@ -76,14 +78,14 @@ const createPriceTemplate = (basePrice) => `
     <input class="event__input  event__input--price"
     id="event-price-1"
     name="event-price"
-    value="${he.encode(String(basePrice))}" onkeyup="this.value = this.value.replace(/[^0-9]/g,'');" required>
+    value="${he.encode(String(basePrice))}" onkeyup="this.value = this.value.replace(/[^0-9]/g,'');" ${isDisabled ? 'disabled' : ''} required>
   </div>`;
 
 //секция офферов соответствующих типу события
-const createOfferItemTemplate = (type, title, price, id, className) => `
+const createOfferItemTemplate = (type, title, price, id, className, isDisabled) => `
   <div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden"
-    id="event-offer-${replaceSpaceInName(title)}-1" type="checkbox" name="event-offer-${type}" data-offer-id="${id}" ${className}>
+    id="event-offer-${replaceSpaceInName(title)}-1" type="checkbox" name="event-offer-${type}" data-offer-id="${id}" ${className} ${isDisabled ? 'disabled' : ''}>
     <label class="event__offer-label" for="event-offer-${replaceSpaceInName(title)}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -92,16 +94,16 @@ const createOfferItemTemplate = (type, title, price, id, className) => `
   </div>
 `;
 
-const createallOffersByType = (eventPoint, offersByType) =>
+const createallOffersByType = (eventPoint, offersByType, isDisabled) =>
   offersByType
     .map((offer) => {
       const isCheckedOfferClassName = eventPoint.offers.includes(offer.id) ? 'checked' : '';
 
-      return createOfferItemTemplate(eventPoint.type, offer.title, offer.price, offer.id, isCheckedOfferClassName);
+      return createOfferItemTemplate(eventPoint.type, offer.title, offer.price, offer.id, isCheckedOfferClassName, isDisabled);
     })
     .join('');
 
-const createSectionOffersTemplate = (eventPoint, offers) => {
+const createSectionOffersTemplate = (eventPoint, offers, isDisabled) => {
   const offersByType = offers.find((item) => item.type === eventPoint.type).offers;
 
   return offersByType.length
@@ -109,7 +111,7 @@ const createSectionOffersTemplate = (eventPoint, offers) => {
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${createallOffersByType(eventPoint, offersByType)}
+      ${createallOffersByType(eventPoint, offersByType, isDisabled)}
     </div>
   </section>`
     : '';

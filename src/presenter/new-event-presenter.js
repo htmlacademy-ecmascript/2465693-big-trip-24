@@ -2,8 +2,6 @@ import FormCreateView from '../view/form-create-view.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { UpdateType, UserAction, NEW_POINT } from '../const.js';
 import { isEscapeKey } from '../utils.js';
-import { nanoid } from 'nanoid';
-
 export default class NewEventPresenter {
   #eventPoint = NEW_POINT;
   #eventListContainer = null;
@@ -52,9 +50,15 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#addComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   #handleFormSubmit = (eventPoint) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, { ...eventPoint, id: nanoid() });
-    this.destroy();
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint); //**** */
   };
 
   #handleCancelClick = () => {

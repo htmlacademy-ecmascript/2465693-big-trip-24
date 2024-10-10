@@ -47,14 +47,19 @@ export default class EventPointsModel extends Observable {
   }
 
   //метод добавления новой точки события
-  addEventPoint(updateType, update) {
-    this.#eventPoints = [update, ...this.#eventPoints];
-
-    this._notify(updateType, update);
+  async addPoint(updateType, update) {
+    try {
+      const response = await this.#service.addPoint(update);
+      const newPoint = this.#adaptToClient(response);
+      this.#eventPoints = [newPoint, ...this.#eventPoints];
+      this._notify(updateType, newPoint);
+    } catch (err) {
+      throw new Error('Can not add point');
+    }
   }
 
   //метод удаления точки события
-  deletePoint(updateType, update) {
+  async deletePoint(updateType, update) {
     const index = this.#eventPoints.findIndex((eventPoint) => eventPoint.id === update.id);
 
     //!~index аналог index === -1
@@ -62,9 +67,13 @@ export default class EventPointsModel extends Observable {
       throw new Error('Can not delete unexisting point');
     }
 
-    this.#eventPoints = [...this.#eventPoints.slice(0, index), ...this.#eventPoints.slice(index + 1)];
-
-    this._notify(updateType);
+    try {
+      await this.#service.deletePoint(update);
+      this.#eventPoints = [...this.#eventPoints.slice(0, index), ...this.#eventPoints.slice(index + 1)];
+      this._notify(updateType);
+    } catch (err) {
+      throw new Error('Can not delete point');
+    }
   }
 
   //адаптируем данные c сервера snake_case TO camelCase

@@ -55,7 +55,6 @@ const UserAction = {
 const START_TYPE = 'flight';
 
 const NEW_POINT = {
-  id: 0,
   basePrice: '0',
   dateFrom: null,
   dateTo: null,

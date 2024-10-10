@@ -3,6 +3,8 @@ import ApiService from './framework/api-service';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 //создаем класс PointsApiService в котором будет реализовано взаимодействие с сервером
@@ -34,6 +36,29 @@ export default class EventPointsApiService extends ApiService {
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  async addPoint(eventPoint) {
+    const response = await this._load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(eventPoint)),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    });
+
+    //разбор ответа от сервера
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  async deletePoint(eventPoint) {
+    const response = await this._load({
+      url: `points/${eventPoint.id}`,
+      method: Method.DELETE,
+    });
+
+    return response;
   }
 
   //адаптируем данные для передачи на сервер camelCase TO snake_case
