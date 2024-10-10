@@ -10,7 +10,7 @@ import {
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createNewFormViewTemplate = ({ eventPoint, destinations, offers, typeOffers }) => {
+const createNewFormViewTemplate = ({ eventPoint, destinations, offers, typeOffers, isDisabled, isSaving }) => {
   const { type, basePrice, dateFrom, dateTo } = eventPoint;
 
   const destination = destinations.find((item) => item.id === eventPoint.destination);
@@ -19,15 +19,15 @@ const createNewFormViewTemplate = ({ eventPoint, destinations, offers, typeOffer
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
-        ${createEventTypeTemplate(type, typeOffers)}
-        ${createDestinationTemplate(type, destination, destinations)}
-        ${createDateTimeTemplate(dateFrom, dateTo)}
-        ${createPriceTemplate(basePrice)}
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        ${createEventTypeTemplate(type, typeOffers, isDisabled)}
+        ${createDestinationTemplate(type, destination, destinations, isDisabled)}
+        ${createDateTimeTemplate(dateFrom, dateTo, isDisabled)}
+        ${createPriceTemplate(basePrice, isDisabled)}
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createSectionOffersTemplate(eventPoint, offers)}
+        ${createSectionOffersTemplate(eventPoint, offers, isDisabled)}
         ${createSectionDestinationTemplate(destination)}
       </section>
     </form>
@@ -165,10 +165,12 @@ export default class FormCreateView extends AbstractStatefulView {
     eventPoint.offers.forEach((offer) => {
       offer.isChecked = false;
     });
-    return eventPoint;
+    return { ...eventPoint, isDisabled: false, isSaving: false };
   }
 
   static parseStateToPoint(state) {
+    delete state.isDisabled;
+    delete state.isSaving;
     return { ...state };
   }
 }

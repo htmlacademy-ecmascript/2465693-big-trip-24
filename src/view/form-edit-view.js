@@ -7,11 +7,11 @@ import {
   createSectionOffersTemplate,
   createSectionDestinationTemplate,
 } from './form-elements-view.js';
-import dayjs from 'dayjs';
+
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeOffers }) => {
+const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeOffers, isDisabled, isSaving, isDeleting }) => {
   const { type, basePrice, dateFrom, dateTo } = eventPoint;
   const destination = destinations.find((item) => item.id === eventPoint.destination);
 
@@ -19,18 +19,18 @@ const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeO
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
-        ${createEventTypeTemplate(type, typeOffers)}
-        ${createDestinationTemplate(type, destination, destinations)}
-        ${createDateTimeTemplate(dateFrom, dateTo)}
-        ${createPriceTemplate(basePrice)}
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        ${createEventTypeTemplate(type, typeOffers, isDisabled)}
+        ${createDestinationTemplate(type, destination, destinations, isDisabled)}
+        ${createDateTimeTemplate(dateFrom, dateTo, isDisabled)}
+        ${createPriceTemplate(basePrice, isDisabled)}
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
       <section class="event__details">
-        ${createSectionOffersTemplate(eventPoint, offers)}
+        ${createSectionOffersTemplate(eventPoint, offers, isDisabled)}
         ${createSectionDestinationTemplate(destination)}
       </section>
     </form>
@@ -183,15 +183,13 @@ export default class FormEditView extends AbstractStatefulView {
 
   //метод конвертации
   static parsePointToState(eventPoint) {
-    if (eventPoint.dateFrom instanceof dayjs) {
-      const dateFrom = eventPoint.dateFrom.toDate();
-      const dateTo = eventPoint.dateTo.toDate();
-      return { ...eventPoint, dateFrom: dateFrom, dateTo: dateTo };
-    }
-    return { ...eventPoint };
+    return { ...eventPoint, isDisabled: false, isSaving: false, isDeleting: false };
   }
 
   static parseStateToPoint(state) {
+    delete state.isDisabled;
+    delete state.isSaving;
+    delete state.isDeleting;
     return { ...state };
   }
 }

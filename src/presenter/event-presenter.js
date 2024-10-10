@@ -72,7 +72,8 @@ export default class EventPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editEventPoint, prevEditEventPointComponent);
+      replace(this.#eventPoint, prevEditEventPointComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -88,6 +89,24 @@ export default class EventPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#editEventPoint.reset(this.#eventPointItem);
       this.#replaceEditToView();
+    }
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventPoint.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventPoint.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
     }
   }
 
@@ -146,7 +165,6 @@ export default class EventPresenter {
     const isMinorUpdate = !isDatesChange(this.#eventPointItem.dateFrom, update.dateFrom) && !isDatesChange(this.#eventPointItem.dateTo, update.dateTo);
 
     this.#handleDataChange(UserAction.UPDATE_POINT, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, update);
-    this.#replaceEditToView();
   };
 
   #onDeleteClick = (eventPointItem) => {
