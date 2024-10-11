@@ -24,7 +24,7 @@ const getDuration = (dateBegin, dateEnd) => {
     durationResult += `${days.toString().padStart(2, '0')}D `;
   }
 
-  if ((hours >= 0) & (days > 0)) {
+  if ((hours >= 0) & (days >= 0)) {
     durationResult += `${hours.toString().padStart(2, '0')}H `;
   }
 
