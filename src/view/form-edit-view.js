@@ -11,16 +11,16 @@ import {
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeOffers, isDisabled, isSaving, isDeleting }) => {
-  const { type, basePrice, dateFrom, dateTo } = eventPoint;
-  const destination = destinations.find((item) => item.id === eventPoint.destination);
+const createNewFormEditViewTemplate = (state, destinations, offers, typeOffers) => {
+  const { type, basePrice, dateFrom, dateTo, destination, isDisabled, isSaving, isDeleting } = state;
+  const destinationName = destinations.find((item) => item.id === destination);
 
   return `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         ${createEventTypeTemplate(type, typeOffers, isDisabled)}
-        ${createDestinationTemplate(type, destination, destinations, isDisabled)}
+        ${createDestinationTemplate(type, destinationName, destinations, isDisabled)}
         ${createDateTimeTemplate(dateFrom, dateTo, isDisabled)}
         ${createPriceTemplate(basePrice, isDisabled)}
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
@@ -30,8 +30,8 @@ const createNewFormEditViewTemplate = ({ eventPoint, offers, destinations, typeO
         </button>
       </header>
       <section class="event__details">
-        ${createSectionOffersTemplate(eventPoint, offers, isDisabled)}
-        ${createSectionDestinationTemplate(destination)}
+        ${createSectionOffersTemplate(state, offers, isDisabled)}
+        ${createSectionDestinationTemplate(destinationName)}
       </section>
     </form>
   </li>`;
@@ -65,12 +65,7 @@ export default class FormEditView extends AbstractStatefulView {
   }
 
   get template() {
-    return createNewFormEditViewTemplate({
-      eventPoint: this._state,
-      destinations: this.#allDestinations,
-      offers: this.#offers,
-      typeOffers: this.#typeOffers,
-    });
+    return createNewFormEditViewTemplate(this._state, this.#allDestinations, this.#offers, this.#typeOffers);
   }
 
   reset(eventPoint) {
@@ -183,8 +178,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   //метод конвертации
   static parsePointToState(eventPoint) {
-    const point = { ...eventPoint, isDisabled: false, isSaving: false, isDeleting: false };
-    return point;
+    return { ...eventPoint, isDisabled: false, isSaving: false, isDeleting: false };
   }
 
   static parseStateToPoint(state) {

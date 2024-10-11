@@ -94,24 +94,24 @@ const createOfferItemTemplate = (type, title, price, id, className, isDisabled) 
   </div>
 `;
 
-const createallOffersByType = (eventPoint, offersByType, isDisabled) =>
+const createallOffersByType = (state, offersByType, isDisabled) =>
   offersByType
     .map((offer) => {
-      const isCheckedOfferClassName = eventPoint.offers.includes(offer.id) ? 'checked' : '';
+      const isCheckedOfferClassName = state.offers.includes(offer.id) ? 'checked' : '';
 
-      return createOfferItemTemplate(eventPoint.type, offer.title, offer.price, offer.id, isCheckedOfferClassName, isDisabled);
+      return createOfferItemTemplate(state.type, offer.title, offer.price, offer.id, isCheckedOfferClassName, isDisabled);
     })
     .join('');
 
-const createSectionOffersTemplate = (eventPoint, offers, isDisabled) => {
-  const offersByType = offers.find((item) => item.type === eventPoint.type).offers;
+const createSectionOffersTemplate = (state, offers, isDisabled) => {
+  const offersByType = offers.find((item) => item.type === state.type).offers;
 
   return offersByType.length
     ? `
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${createallOffersByType(eventPoint, offersByType, isDisabled)}
+      ${createallOffersByType(state, offersByType, isDisabled)}
     </div>
   </section>`
     : '';
