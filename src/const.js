@@ -64,4 +64,9 @@ const NEW_POINT = {
   type: START_TYPE,
 };
 
-export { SortType, availableSortType, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE };
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+export { SortType, availableSortType, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE, TimeLimit };
