@@ -129,19 +129,31 @@ export default class MainPresenter {
    * @updateType - тип изменений, нужно чтобы понять, что после нужно обновить
    * @update обновленные данные
    */
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#eventPresenter.get(update.id).setSaving();
-        this.#eventPointsModel.updatePoint(updateType, update);
+        try {
+          await this.#eventPointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#eventPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
         this.#newEventPresenter.setSaving();
-        this.#eventPointsModel.addPoint(updateType, update);
+        try {
+          await this.#eventPointsModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#newEventPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
         this.#eventPresenter.get(update.id).setDeleting();
-        this.#eventPointsModel.deletePoint(updateType, update);
+        try {
+          await this.#eventPointsModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#eventPresenter.get(update.id).setAborting();
+        }
         break;
     }
   };

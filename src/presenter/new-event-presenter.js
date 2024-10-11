@@ -57,6 +57,18 @@ export default class NewEventPresenter {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#addComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#addComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (eventPoint) => {
     this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint); //**** */
   };

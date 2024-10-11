@@ -110,6 +110,25 @@ export default class EventPresenter {
     }
   }
 
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#editEventPoint.shake();
+      return;
+    }
+
+    //сброс всех флагов к изначальным
+    const resetFormState = () => {
+      this.#editEventPoint.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    //выполнение "потрясывания"
+    this.#editEventPoint.shake(resetFormState);
+  }
+
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
