@@ -25,7 +25,7 @@ const createNewFormEditViewTemplate = (state, destinations, offers, typeOffers) 
         ${createPriceTemplate(basePrice, isDisabled)}
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset" ${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
-        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
+        <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
