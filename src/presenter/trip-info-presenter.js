@@ -2,14 +2,14 @@ import TripInfoView from '../view/trip-info-view.js';
 import { render, RenderPosition } from '../framework/render.js';
 
 export default class TripInfoPresenter {
-  #container = null;
+  #mainContainer = null;
   #tripInfoComponent = new TripInfoView();
 
-  constructor({ container }) {
-    this.#container = container;
+  constructor({ mainContainer }) {
+    this.#mainContainer = mainContainer;
   }
 
   init() {
-    render(this.#tripInfoComponent, this.#container, RenderPosition.AFTERBEGIN);
+    render(this.#tripInfoComponent, this.#mainContainer, RenderPosition.AFTERBEGIN);
   }
 }

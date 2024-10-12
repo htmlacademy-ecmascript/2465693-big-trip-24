@@ -69,4 +69,7 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export { SortType, availableSortType, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE, TimeLimit };
+const AUTHORIZATION = 'Basic vs5u547ok13579w';
+const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
+
+export { SortType, availableSortType, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE, TimeLimit, AUTHORIZATION, END_POINT };
