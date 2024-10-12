@@ -9,14 +9,16 @@ export default class NewEventPresenter {
   #destinationsModel = null;
   #handleDataChange = null;
   #handleDestroy = null;
+  #handleReset = null;
   #addComponent = null;
 
-  constructor({ container, offersModel, destinationsModel, onDataChange, onDestroy }) {
-    this.#eventListContainer = container;
+  constructor({ eventContainer, offersModel, destinationsModel, onDataChange, onDestroy, onReset }) {
+    this.#eventListContainer = eventContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
+    this.#handleReset = onReset;
   }
 
   init() {
@@ -43,6 +45,7 @@ export default class NewEventPresenter {
     }
 
     this.#handleDestroy();
+    this.#handleReset();
 
     remove(this.#addComponent);
     this.#addComponent = null;

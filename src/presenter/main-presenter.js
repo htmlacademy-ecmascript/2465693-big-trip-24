@@ -1,6 +1,6 @@
 import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../const.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import EventListView from '../view/event-list-view.js';
+import EventsListView from '../view/events-list-view.js';
 import SortView from '../view/sort-view';
 import MessageView from '../view/message-view.js';
 import LoadingView from '../view/loading-view.js';
@@ -11,8 +11,8 @@ import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
 import { render, RenderPosition, remove } from '../framework/render.js';
 
 export default class MainPresenter {
-  #eventList = new EventListView();
-  #container = null;
+  #mainContainer = null;
+  #eventsContainer = null;
   #eventPointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
@@ -21,6 +21,7 @@ export default class MainPresenter {
   #messageComponent = null;
   #Loadingcomponent = new LoadingView();
 
+  #eventsList = new EventsListView();
   #eventPresenter = new Map();
   #newEventPresenter = null;
 
@@ -32,19 +33,21 @@ export default class MainPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
-    this.#container = container;
+  constructor({ mainContainer, eventsContainer, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
+    this.#mainContainer = mainContainer;
+    this.#eventsContainer = eventsContainer;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
 
     this.#newEventPresenter = new NewEventPresenter({
-      container: this.#eventList.element,
+      eventContainer: this.#eventsList.element,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewEventDestroy,
+      onReset: this.#handleFormReset,
     });
 
     //подписка на изменение модели
@@ -75,6 +78,9 @@ export default class MainPresenter {
     this.#filterType = FilterType.EVERYTHING;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventPresenter.init();
+    if (this.#messageComponent) {
+      remove(this.#messageComponent);
+    }
   }
 
   /**приватный метод для отрисовки компонентов сортировки */
@@ -84,7 +90,7 @@ export default class MainPresenter {
       onSortTypeChange: this.#handleSortTypeChange,
     });
 
-    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
+    render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
   }
 
   /**приватный метод для отрисовки сообщения на странице */
@@ -92,13 +98,13 @@ export default class MainPresenter {
     this.#messageComponent = new MessageView({
       filterType: this.#filterType,
     });
-    render(this.#messageComponent, this.#container);
+    render(this.#messageComponent, this.#eventsContainer);
   }
 
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
   #renderEventPoint(eventPointItem) {
     const eventPresenter = new EventPresenter({
-      container: this.#eventList.element,
+      container: this.#eventsList.element,
       eventPointsModel: this.#eventPointsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
@@ -203,31 +209,41 @@ export default class MainPresenter {
     this.#renderPage();
   };
 
+  #handleFormReset = () => {
+    if (this.eventPoints.length === 0) {
+      remove(this.#sortComponent);
+      this.#renderMessage();
+    }
+  };
+
   #renderEventPoints(eventPoints) {
     eventPoints.forEach((eventPoint) => this.#renderEventPoint(eventPoint));
   }
 
   #renderLoading() {
-    render(this.#Loadingcomponent, this.#container);
+    render(this.#Loadingcomponent, this.#eventsContainer);
   }
 
   /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
-    render(this.#eventList, this.#container);
+    render(this.#eventsList, this.#eventsContainer);
     this.#renderEventPoints(this.eventPoints);
   }
 
   #renderPage() {
+    //показ что идет процесс загрузки
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
 
-    //проверяем, если событий нет, то выводим сообщение
+    //проверяем, если событий нет, то выводим сообщение, о необходимости добавить событие
     if (!this.eventPoints.length) {
       this.#renderMessage();
+      render(this.#eventsList, this.#eventsContainer);
       return;
     }
+
     this.#renderSort();
     this.#renderEventsList();
   }
