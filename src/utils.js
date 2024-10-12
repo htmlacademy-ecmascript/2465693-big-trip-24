@@ -21,15 +21,15 @@ const getDuration = (dateBegin, dateEnd) => {
   let durationResult = '';
 
   if (days > 0) {
-    durationResult += `${days}D `;
+    durationResult += `${days.toString().padStart(2, '0')}D `;
   }
 
-  if (hours > 0) {
-    durationResult += `${hours}H `;
+  if ((hours >= 0) & (days >= 0)) {
+    durationResult += `${hours.toString().padStart(2, '0')}H `;
   }
 
-  if (minutes > 0 || (days === 0 && hours === 0)) {
-    durationResult += `${minutes}M `;
+  if (minutes >= 0 || (days === 0 && hours === 0)) {
+    durationResult += `${minutes.toString().padStart(2, '0')}M `;
   }
 
   return durationResult;

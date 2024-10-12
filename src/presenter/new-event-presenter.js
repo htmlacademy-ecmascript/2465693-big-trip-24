@@ -2,8 +2,6 @@ import FormCreateView from '../view/form-create-view.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { UpdateType, UserAction, NEW_POINT } from '../const.js';
 import { isEscapeKey } from '../utils.js';
-import { nanoid } from 'nanoid';
-
 export default class NewEventPresenter {
   #eventPoint = NEW_POINT;
   #eventListContainer = null;
@@ -11,14 +9,16 @@ export default class NewEventPresenter {
   #destinationsModel = null;
   #handleDataChange = null;
   #handleDestroy = null;
+  #handleReset = null;
   #addComponent = null;
 
-  constructor({ container, offersModel, destinationsModel, onDataChange, onDestroy }) {
-    this.#eventListContainer = container;
+  constructor({ eventContainer, offersModel, destinationsModel, onDataChange, onDestroy, onReset }) {
+    this.#eventListContainer = eventContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
+    this.#handleReset = onReset;
   }
 
   init() {
@@ -45,6 +45,7 @@ export default class NewEventPresenter {
     }
 
     this.#handleDestroy();
+    this.#handleReset();
 
     remove(this.#addComponent);
     this.#addComponent = null;
@@ -52,9 +53,27 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#addComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#addComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#addComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (eventPoint) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, { ...eventPoint, id: nanoid() });
-    this.destroy();
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint); //**** */
   };
 
   #handleCancelClick = () => {

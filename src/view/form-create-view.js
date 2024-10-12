@@ -10,25 +10,25 @@ import {
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createNewFormViewTemplate = ({ eventPoint, destinations, offers, typeOffers }) => {
-  const { type, basePrice, dateFrom, dateTo } = eventPoint;
+const createNewFormViewTemplate = (state, destinations, offers, typeOffers) => {
+  const { type, basePrice, dateFrom, dateTo, destination, isDisabled, isSaving } = state;
 
-  const destination = destinations.find((item) => item.id === eventPoint.destination);
+  const destinationName = destinations.find((item) => item.id === destination);
 
   return `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
-        ${createEventTypeTemplate(type, typeOffers)}
-        ${createDestinationTemplate(type, destination, destinations)}
-        ${createDateTimeTemplate(dateFrom, dateTo)}
-        ${createPriceTemplate(basePrice)}
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        ${createEventTypeTemplate(type, typeOffers, isDisabled)}
+        ${createDestinationTemplate(type, destinationName, destinations, isDisabled)}
+        ${createDateTimeTemplate(dateFrom, dateTo, isDisabled)}
+        ${createPriceTemplate(basePrice, isDisabled)}
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createSectionOffersTemplate(eventPoint, offers)}
-        ${createSectionDestinationTemplate(destination)}
+        ${createSectionOffersTemplate(state, offers, isDisabled)}
+        ${createSectionDestinationTemplate(destinationName)}
       </section>
     </form>
   </li>`;
@@ -48,8 +48,8 @@ export default class FormCreateView extends AbstractStatefulView {
 
   constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onCancelClick }) {
     super();
-    this._setState(FormCreateView.parsePointToState(eventPoint));
     this.#eventPoint = eventPoint;
+    this._setState(FormCreateView.parsePointToState(eventPoint));
     this.#allDestinations = allDestinations;
     this.#offers = offers;
     this.#typeOffers = typeOffers;
@@ -59,7 +59,7 @@ export default class FormCreateView extends AbstractStatefulView {
   }
 
   get template() {
-    return createNewFormViewTemplate({ eventPoint: this._state, destinations: this.#allDestinations, offers: this.#offers, typeOffers: this.#typeOffers });
+    return createNewFormViewTemplate(this._state, this.#allDestinations, this.#offers, this.#typeOffers);
   }
 
   //перегружаем метод родителя, чтобы при удалении удалялся более не нужный календарь
@@ -84,11 +84,7 @@ export default class FormCreateView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationOptionHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelHandler);
-
-    const offersElement = this.element.querySelector('.event__available-offers');
-    if (offersElement) {
-      offersElement.addEventListener('change', this.#offersChangeHandler);
-    }
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
 
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
@@ -162,14 +158,15 @@ export default class FormCreateView extends AbstractStatefulView {
 
   //метод конвертации, "обогащаем" двумя новыми элементами id и isChecked
   static parsePointToState(eventPoint) {
-    eventPoint.offers.forEach((offer, index) => {
-      offer.id = index;
+    eventPoint.offers.forEach((offer) => {
       offer.isChecked = false;
     });
-    return eventPoint;
+    return { ...eventPoint, isDisabled: false, isSaving: false };
   }
 
   static parseStateToPoint(state) {
+    delete state.isDisabled;
+    delete state.isSaving;
     return { ...state };
   }
 }
