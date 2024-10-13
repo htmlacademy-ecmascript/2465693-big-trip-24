@@ -35,6 +35,11 @@ const getDuration = (dateBegin, dateEnd) => {
   return durationResult;
 };
 
+const isMinoreUpdate = (point, updatePoint) =>
+  point.dateFrom !== updatePoint.dateFrom ||
+  point.basePrice !== updatePoint.basePrice ||
+  getDuration(point.dateFrom, point.dateTo) !== getDuration(updatePoint.dateFrom, updatePoint.dateTo);
+
 //нажата ли кнопка Esc
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
@@ -87,4 +92,4 @@ const sortByTime = (eventA, eventB) => {
 //проверка дата изменена в форме редактирования
 const isDatesChange = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
-export { capitalizeLetter, humanizeEventDueDate, getDuration, isEscapeKey, filter, replaceSpaceInName, sortByDay, sortByPrice, sortByTime, isDatesChange };
+export { capitalizeLetter, humanizeEventDueDate, getDuration, isEscapeKey, filter, replaceSpaceInName, sortByDay, sortByPrice, sortByTime, isDatesChange, isMinoreUpdate };

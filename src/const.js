@@ -72,7 +72,7 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-const AUTHORIZATION = 'Basic vs5u547ok13579v';
+const AUTHORIZATION = 'Basic vs5u547ok13579w';
 const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
 const TRIP_DESTINATION_COUNT = 3;

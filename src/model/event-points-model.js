@@ -3,15 +3,20 @@ import { UpdateType } from '../const.js';
 export default class EventPointsModel extends Observable {
   #service = null;
   #eventPoints = [];
+  #offersModel = null;
+  #destinationsModel = null;
 
-  constructor(service) {
+  constructor(service, offersModel, destinayionsModel) {
     super();
     this.#service = service;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinayionsModel;
   }
 
   //метод Init, запрос на получение данных
   async init() {
     try {
+      await Promise.all([this.#destinationsModel.init(), this.#offersModel.init()]);
       const eventPoints = await this.#service.eventPoints; //получаем список событий
       this.#eventPoints = eventPoints.map(this.#adaptToClient); //преобразование задач к нужному виду, применяя адаптер
       this._notify(UpdateType.INIT);

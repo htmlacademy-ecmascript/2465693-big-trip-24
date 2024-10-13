@@ -2,7 +2,7 @@ import { render, replace, remove } from '../framework/render.js';
 import { UpdateType, UserAction } from '../const.js';
 import FormEditView from '../view/form-edit-view.js';
 import LocationPointView from '../view/location-point-view.js';
-import { isEscapeKey, isDatesChange } from '../utils.js';
+import { isEscapeKey, isMinoreUpdate } from '../utils.js';
 
 /**режим точки события.
  * @DEFAULT - просмотр
@@ -17,7 +17,6 @@ export default class EventPresenter {
   #eventPointItem = null;
   #editEventPoint = null;
   #eventPoint = null;
-  #eventPointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
   #container = null;
@@ -26,9 +25,8 @@ export default class EventPresenter {
   //флаг хранящий текущий режим отображения
   #mode = Mode.DEFAULT;
 
-  constructor({ container, eventPointsModel, offersModel, destinationsModel, onDataChange, onModeChange }) {
+  constructor({ container, offersModel, destinationsModel, onDataChange, onModeChange }) {
     this.#container = container;
-    this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
@@ -181,7 +179,8 @@ export default class EventPresenter {
 
   /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
   #onFormSubmit = (update) => {
-    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, update);
+    const neccesaryUpdateType = isMinoreUpdate(this.#eventPointItem, update) ? UpdateType.MINOR : UpdateType.PATCH;
+    this.#handleDataChange(UserAction.UPDATE_POINT, neccesaryUpdateType, update);
   };
 
   #onDeleteClick = (eventPointItem) => {

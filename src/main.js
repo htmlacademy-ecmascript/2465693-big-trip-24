@@ -18,8 +18,8 @@ const newEventButtonComponent = new NewEventButtonView({ onButtonClick: handleNe
 
 const service = new EventPointsApiService(END_POINT, AUTHORIZATION);
 const offersModel = new OffersModel(service);
-const eventPointsModel = new EventPointsModel(service);
 const destinationsModel = new DestinationsModel(service);
+const eventPointsModel = new EventPointsModel(service, offersModel, destinationsModel);
 const filterModel = new FilterModel();
 
 const tripInfoPresenter = new TripInfoPresenter(eventPointsModel, destinationsModel, offersModel, tripMainElement);
@@ -42,13 +42,8 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-//инициализация evenPointsModel будет выполняться после успешной инициализации offersModel и destinationModel
-Promise.all([offersModel.init(), destinationsModel.init()]).then(() => {
-  eventPointsModel.init().finally(() => {
-    render(newEventButtonComponent, tripMainElement);
-  });
-});
-
 tripInfoPresenter.init();
 filterPresenter.init();
+render(newEventButtonComponent, tripMainElement);
+eventPointsModel.init();
 mainPresenter.init();

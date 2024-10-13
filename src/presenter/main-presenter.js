@@ -110,7 +110,6 @@ export default class MainPresenter {
   #renderEventPoint(eventPointItem) {
     const eventPresenter = new EventPresenter({
       container: this.#eventsList.element,
-      eventPointsModel: this.#eventPointsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
