@@ -22,10 +22,9 @@ const eventPointsModel = new EventPointsModel(service);
 const destinationsModel = new DestinationsModel(service);
 const filterModel = new FilterModel();
 
-const tripInfoPresenter = new TripInfoPresenter({ mainContainer: tripMainElement });
+const tripInfoPresenter = new TripInfoPresenter(eventPointsModel, destinationsModel, offersModel, tripMainElement);
 const filterPresenter = new FilterPresenter({ filterContainer: filterControlElement, filterModel, eventPointsModel });
 const mainPresenter = new MainPresenter({
-  mainContainer: tripMainElement,
   eventsContainer: tripEventsElement,
   eventPointsModel,
   offersModel,

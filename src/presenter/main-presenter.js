@@ -11,7 +11,6 @@ import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
 import { render, RenderPosition, remove } from '../framework/render.js';
 
 export default class MainPresenter {
-  #mainContainer = null;
   #eventsContainer = null;
   #eventPointsModel = null;
   #offersModel = null;
@@ -33,8 +32,7 @@ export default class MainPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor({ mainContainer, eventsContainer, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
-    this.#mainContainer = mainContainer;
+  constructor({ eventsContainer, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
     this.#eventsContainer = eventsContainer;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
