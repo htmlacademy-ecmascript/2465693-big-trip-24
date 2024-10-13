@@ -15,6 +15,7 @@ const MessageText = {
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
   FUTURE: 'There are no future events now',
+  ERROR: 'Failed to load latest route information',
 };
 
 const SortType = {
@@ -38,6 +39,7 @@ const FilterType = {
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past',
+  ERROR: 'error',
 };
 
 const UpdateType = {

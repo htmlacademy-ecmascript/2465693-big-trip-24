@@ -99,6 +99,13 @@ export default class MainPresenter {
     render(this.#messageComponent, this.#eventsContainer);
   }
 
+  #renderError() {
+    this.#messageComponent = new MessageView({
+      filterType: 'ERROR',
+    });
+    render(this.#messageComponent, this.#eventsContainer);
+  }
+
   /**приватный метод для отрисовки точки события, принимает объект точки события*/
   #renderEventPoint(eventPointItem) {
     const eventPresenter = new EventPresenter({
@@ -193,6 +200,10 @@ export default class MainPresenter {
         remove(this.#Loadingcomponent);
         this.#renderPage();
         break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#Loadingcomponent);
+        this.#renderError();
     }
   };
 

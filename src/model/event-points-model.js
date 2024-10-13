@@ -14,11 +14,12 @@ export default class EventPointsModel extends Observable {
     try {
       const eventPoints = await this.#service.eventPoints; //получаем список событий
       this.#eventPoints = eventPoints.map(this.#adaptToClient); //преобразование задач к нужному виду, применяя адаптер
+      this._notify(UpdateType.INIT);
     } catch (err) {
       this.#eventPoints = [];
+      this._notify(UpdateType.ERROR);
     }
     //уведомляет, что модель обновилась
-    this._notify(UpdateType.INIT);
   }
 
   get eventPoints() {
