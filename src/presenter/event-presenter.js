@@ -112,7 +112,7 @@ export default class EventPresenter {
 
   setAborting() {
     if (this.#mode === Mode.DEFAULT) {
-      this.#editEventPoint.shake();
+      this.#eventPoint.shake();
       return;
     }
 
@@ -181,9 +181,7 @@ export default class EventPresenter {
 
   /**функция смены формы редактирования на просмотр, при нажатии на кнопку Save */
   #onFormSubmit = (update) => {
-    const isMinorUpdate = !isDatesChange(this.#eventPointItem.dateFrom, update.dateFrom) && !isDatesChange(this.#eventPointItem.dateTo, update.dateTo);
-
-    this.#handleDataChange(UserAction.UPDATE_POINT, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, update);
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, update);
   };
 
   #onDeleteClick = (eventPointItem) => {

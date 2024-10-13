@@ -39,7 +39,7 @@ const createNewFormEditViewTemplate = (state, destinations, offers, typeOffers) 
 
 export default class FormEditView extends AbstractStatefulView {
   #originalPoint = null;
-  #pointDestination = null;
+  //#pointDestination = null;
   #allDestinations = [];
   #offers = [];
   #typeOffers = [];
