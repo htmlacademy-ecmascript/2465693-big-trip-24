@@ -5,7 +5,7 @@ const capitalizeLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
 const humanizeEventDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
-const getDurationEvent = (days, hours, minutes) => {
+const durationEvent = (days, hours, minutes) => {
   let result = '';
 
   if (days > 0) {
@@ -28,7 +28,7 @@ const getDuration = (dateBegin, dateEnd) => {
   const hours = Math.floor((durationInMinutes % (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR)) / TimeConverter.MINUTES_IN_HOUR);
   const minutes = durationInMinutes % TimeConverter.MINUTES_IN_HOUR;
 
-  return getDurationEvent(days, hours, minutes);
+  return durationEvent(days, hours, minutes);
 };
 
 const isMinoreUpdate = (point, updatePoint) =>
