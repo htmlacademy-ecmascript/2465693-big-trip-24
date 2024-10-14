@@ -1,4 +1,4 @@
-import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../const.js';
+import { render, RenderPosition, remove } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import EventsListView from '../view/events-list-view.js';
 import SortView from '../view/sort-view';
@@ -6,12 +6,10 @@ import MessageView from '../view/message-view.js';
 import LoadingView from '../view/loading-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
+import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../const.js';
 import { sortByDay, sortByPrice, sortByTime, filter } from '../utils.js';
 
-import { render, RenderPosition, remove } from '../framework/render.js';
-
 export default class MainPresenter {
-  #mainContainer = null;
   #eventsContainer = null;
   #eventPointsModel = null;
   #offersModel = null;
@@ -33,8 +31,7 @@ export default class MainPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor({ mainContainer, eventsContainer, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
-    this.#mainContainer = mainContainer;
+  constructor({ eventsContainer, eventPointsModel, offersModel, destinationsModel, filterModel, onNewEventDestroy }) {
     this.#eventsContainer = eventsContainer;
     this.#eventPointsModel = eventPointsModel;
     this.#offersModel = offersModel;
@@ -50,7 +47,6 @@ export default class MainPresenter {
       onReset: this.#handleFormReset,
     });
 
-    //подписка на изменение модели
     this.#eventPointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -83,38 +79,6 @@ export default class MainPresenter {
     }
   }
 
-  /**приватный метод для отрисовки компонентов сортировки */
-  #renderSort() {
-    this.#sortComponent = new SortView({
-      checkedSortType: this.#currentSortType,
-      onSortTypeChange: this.#handleSortTypeChange,
-    });
-
-    render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
-  }
-
-  /**приватный метод для отрисовки сообщения на странице */
-  #renderMessage() {
-    this.#messageComponent = new MessageView({
-      filterType: this.#filterType,
-    });
-    render(this.#messageComponent, this.#eventsContainer);
-  }
-
-  /**приватный метод для отрисовки точки события, принимает объект точки события*/
-  #renderEventPoint(eventPointItem) {
-    const eventPresenter = new EventPresenter({
-      container: this.#eventsList.element,
-      eventPointsModel: this.#eventPointsModel,
-      offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange,
-    });
-    eventPresenter.init(eventPointItem);
-    this.#eventPresenter.set(eventPointItem.id, eventPresenter);
-  }
-
   #handleModeChange = () => {
     this.#newEventPresenter.destroy();
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
@@ -135,11 +99,6 @@ export default class MainPresenter {
     }
   }
 
-  /**обработчик реагирующий на действия пользователя, Здесь будем вызывать обновление модели.
-   * @actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-   * @updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-   * @update обновленные данные
-   */
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
 
@@ -172,11 +131,6 @@ export default class MainPresenter {
     this.#uiBlocker.unblock();
   };
 
-  /**обработчик срабатывающий при изменении модели. В зависимости от типа изменений решаем, что делать:
-   *- обновить часть списка (например, когда поменялся Destination )
-   *- обновить список (например, когда событие удалено или добавилось новое)
-   *- обновить всю доску (например, при переключении фильтра)
-   */
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
@@ -195,10 +149,13 @@ export default class MainPresenter {
         remove(this.#Loadingcomponent);
         this.#renderPage();
         break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#Loadingcomponent);
+        this.#renderError();
     }
   };
 
-  /**обработчик смены сортировки */
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return {};
@@ -216,6 +173,41 @@ export default class MainPresenter {
     }
   };
 
+  #renderSort() {
+    this.#sortComponent = new SortView({
+      checkedSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange,
+    });
+
+    render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderMessage() {
+    this.#messageComponent = new MessageView({
+      filterType: this.#filterType,
+    });
+    render(this.#messageComponent, this.#eventsContainer);
+  }
+
+  #renderError() {
+    this.#messageComponent = new MessageView({
+      filterType: 'ERROR',
+    });
+    render(this.#messageComponent, this.#eventsContainer);
+  }
+
+  #renderEventPoint(eventPointItem) {
+    const eventPresenter = new EventPresenter({
+      container: this.#eventsList.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+    });
+    eventPresenter.init(eventPointItem);
+    this.#eventPresenter.set(eventPointItem.id, eventPresenter);
+  }
+
   #renderEventPoints(eventPoints) {
     eventPoints.forEach((eventPoint) => this.#renderEventPoint(eventPoint));
   }
@@ -224,20 +216,17 @@ export default class MainPresenter {
     render(this.#Loadingcomponent, this.#eventsContainer);
   }
 
-  /**приватный метод для отрисовки списка событий */
   #renderEventsList() {
     render(this.#eventsList, this.#eventsContainer);
     this.#renderEventPoints(this.eventPoints);
   }
 
   #renderPage() {
-    //показ что идет процесс загрузки
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
 
-    //проверяем, если событий нет, то выводим сообщение, о необходимости добавить событие
     if (!this.eventPoints.length) {
       this.#renderMessage();
       render(this.#eventsList, this.#eventsContainer);

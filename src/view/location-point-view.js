@@ -1,5 +1,5 @@
-import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import { DateFormat } from '../const.js';
 import { humanizeEventDueDate, getDuration } from '../utils.js';
 
 const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
@@ -58,17 +58,13 @@ export default class LocationPointView extends AbstractView {
   #handleEditButtonClick = null;
   #handleFavoriteClick = null;
   constructor({ eventPoint, destination, offers, onEditButtonClick, onFavoriteClick }) {
-    /**super вызывает конструктор родительского класса*/
     super();
     this.#eventPoint = eventPoint;
     this.#destination = destination;
     this.#offers = offers;
-    //сохраняем ссылку которую мы получаем в onEditButtonClick
     this.#handleEditButtonClick = onEditButtonClick;
     this.#handleFavoriteClick = onFavoriteClick;
-    //ссылка на элемент event-point
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#EditButtonClickHandler);
-    //находим DOM элемент кнопки в избранное, и выполняем подписку на события click
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
@@ -81,7 +77,6 @@ export default class LocationPointView extends AbstractView {
     this.#handleEditButtonClick();
   };
 
-  /**обработчик где будет вызываться колбэк для Favorite */
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFavoriteClick();

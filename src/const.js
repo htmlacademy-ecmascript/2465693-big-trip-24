@@ -7,6 +7,7 @@ const DateFormat = {
   EVENT_DATE: 'MMM D',
   EVENT_TIME: 'HH:mm',
   EDIT_DATE: 'DD/MM/YY HH:mm',
+  TRIP_INFO: 'D MMM',
 };
 
 const MessageText = {
@@ -14,6 +15,7 @@ const MessageText = {
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
   FUTURE: 'There are no future events now',
+  ERROR: 'Failed to load latest route information',
 };
 
 const SortType = {
@@ -24,7 +26,7 @@ const SortType = {
   OFFERS: 'offers',
 };
 
-const availableSortType = {
+const AvailableSortType = {
   [SortType.DAY]: true,
   [SortType.EVENT]: false,
   [SortType.TIME]: true,
@@ -37,6 +39,7 @@ const FilterType = {
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past',
+  ERROR: 'error',
 };
 
 const UpdateType = {
@@ -69,4 +72,24 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export { SortType, availableSortType, DateFormat, TimeConverter, MessageText, FilterType, UpdateType, UserAction, NEW_POINT, START_TYPE, TimeLimit };
+const AUTHORIZATION = 'Basic vs5u547ok13579w';
+const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
+
+const TRIP_DESTINATION_COUNT = 3;
+
+export {
+  SortType,
+  AvailableSortType,
+  DateFormat,
+  TimeConverter,
+  MessageText,
+  FilterType,
+  UpdateType,
+  UserAction,
+  NEW_POINT,
+  START_TYPE,
+  TimeLimit,
+  AUTHORIZATION,
+  END_POINT,
+  TRIP_DESTINATION_COUNT,
+};

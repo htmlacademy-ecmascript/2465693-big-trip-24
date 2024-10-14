@@ -1,4 +1,4 @@
-import { SortType, availableSortType } from '../const.js';
+import { SortType, AvailableSortType } from '../const.js';
 import { capitalizeLetter } from '../utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
@@ -11,7 +11,7 @@ const createSortItemTemplate = (type, checkedSortType) => `
       data-sort-type="${type}"
       value="sort-${type}"
       ${type === checkedSortType ? 'checked' : ''}
-      ${!availableSortType[type] ? 'disabled' : ''}>
+      ${!AvailableSortType[type] ? 'disabled' : ''}>
     <label class="trip-sort__btn" for="sort-${type}">${capitalizeLetter(type)}</label>
   </div>`;
 

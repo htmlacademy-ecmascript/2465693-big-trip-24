@@ -7,7 +7,6 @@ import {
   createSectionOffersTemplate,
   createSectionDestinationTemplate,
 } from './form-elements-view.js';
-
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -39,7 +38,6 @@ const createNewFormEditViewTemplate = (state, destinations, offers, typeOffers) 
 
 export default class FormEditView extends AbstractStatefulView {
   #originalPoint = null;
-  #pointDestination = null;
   #allDestinations = [];
   #offers = [];
   #typeOffers = [];
@@ -51,7 +49,6 @@ export default class FormEditView extends AbstractStatefulView {
   #handleDeleteClick = null;
 
   constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onRollupButtonClick, onDeleteClick }) {
-    /**super вызывает конструктор родительского класса*/
     super();
     this.#originalPoint = eventPoint;
     this._setState(FormEditView.parsePointToState(eventPoint));
@@ -72,7 +69,6 @@ export default class FormEditView extends AbstractStatefulView {
     this.updateElement(FormEditView.parsePointToState(eventPoint));
   }
 
-  //перегружаем метод родителя, чтобы при удалении удалялся более не нужный календарь
   removeElement() {
     super.removeElement();
 
@@ -87,7 +83,6 @@ export default class FormEditView extends AbstractStatefulView {
     }
   }
 
-  //метод для восстановления обработчиков
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupButtonClickHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
@@ -150,11 +145,11 @@ export default class FormEditView extends AbstractStatefulView {
 
   #setDatepickerStart() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time-1'), {
-      dateFormat: 'd/m/y H:i', //формат даты
-      enableTime: true, //будет доступно задание времени
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
       // eslint-disable-next-line camelcase
-      time_24hr: true, //формат времени
-      defaultDate: this._state.dateFrom, //стартовая дата
+      time_24hr: true,
+      defaultDate: this._state.dateFrom,
       onChange: this.#dateFromChangeHandler,
     });
   }
@@ -167,7 +162,7 @@ export default class FormEditView extends AbstractStatefulView {
       time_24hr: true,
       defaultDate: this._state.dateTo,
       onChange: this.#dateToChangeHandler,
-      minDate: this._state.dateFrom, //дата, раньше которой нельзя выбрать дату
+      minDate: this._state.dateFrom,
     });
   }
 
@@ -176,7 +171,6 @@ export default class FormEditView extends AbstractStatefulView {
     this.#handleDeleteClick(FormEditView.parseStateToPoint(this._state));
   };
 
-  //метод конвертации
   static parsePointToState(eventPoint) {
     return { ...eventPoint, isDisabled: false, isSaving: false, isDeleting: false };
   }

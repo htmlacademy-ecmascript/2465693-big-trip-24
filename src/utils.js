@@ -1,51 +1,49 @@
-import { TimeConverter } from './const.js';
+import { FilterType, TimeConverter } from './const.js';
 import dayjs from 'dayjs';
-import { FilterType } from './const.js';
 
-//Функция возвращающая слово с заглавной буквы
 const capitalizeLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
-//офрматирование даты
 const humanizeEventDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
-const getDuration = (dateBegin, dateEnd) => {
-  //вычисляем разницу в минутах
-  const durationInMinutes = dayjs(dateEnd).diff(dateBegin, 'm');
-  //вычисляем число дней
-  const days = Math.floor(durationInMinutes / (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR));
-  //вычисляем часы
-  const hours = Math.floor((durationInMinutes % (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR)) / TimeConverter.MINUTES_IN_HOUR);
-  //вычисляем минуты
-  const minutes = durationInMinutes % TimeConverter.MINUTES_IN_HOUR;
-
-  let durationResult = '';
+const durationEvent = (days, hours, minutes) => {
+  let result = '';
 
   if (days > 0) {
-    durationResult += `${days.toString().padStart(2, '0')}D `;
+    result += `${days.toString().padStart(2, '0')}D `;
   }
 
   if ((hours >= 0) & (days >= 0)) {
-    durationResult += `${hours.toString().padStart(2, '0')}H `;
+    result += `${hours.toString().padStart(2, '0')}H `;
   }
 
   if (minutes >= 0 || (days === 0 && hours === 0)) {
-    durationResult += `${minutes.toString().padStart(2, '0')}M `;
+    result += `${minutes.toString().padStart(2, '0')}M `;
   }
-
-  return durationResult;
+  return result;
 };
 
-//нажата ли кнопка Esc
+const getDuration = (dateBegin, dateEnd) => {
+  const durationInMinutes = dayjs(dateEnd).diff(dateBegin, 'm');
+  const days = Math.floor(durationInMinutes / (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR));
+  const hours = Math.floor((durationInMinutes % (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR)) / TimeConverter.MINUTES_IN_HOUR);
+  const minutes = durationInMinutes % TimeConverter.MINUTES_IN_HOUR;
+
+  return durationEvent(days, hours, minutes);
+};
+
+const isMinoreUpdate = (point, updatePoint) =>
+  point.dateFrom !== updatePoint.dateFrom ||
+  point.basePrice !== updatePoint.basePrice ||
+  getDuration(point.dateFrom, point.dateTo) !== getDuration(updatePoint.dateFrom, updatePoint.dateTo);
+
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-//является прошедшей датой
 const isPastDate = (dueDate) => {
   const currentDate = dayjs();
   const targetDate = dayjs(dueDate);
   return targetDate.isBefore(currentDate);
 };
 
-//является текущей датой
 const isPresentDate = (eventPoint) => {
   const currentDate = dayjs();
   const targetStartDate = dayjs(eventPoint.dateFrom);
@@ -53,7 +51,6 @@ const isPresentDate = (eventPoint) => {
   return currentDate.isAfter(targetStartDate) && currentDate.isBefore(targetEndDate);
 };
 
-//является будующей датой
 const isFutureDate = (dueDate) => {
   const currentDate = dayjs();
   const targetDate = dayjs(dueDate);
@@ -67,7 +64,6 @@ const filter = {
   [FilterType.PAST]: (eventPoints) => eventPoints.filter((eventPoint) => isPastDate(eventPoint.dateTo)),
 };
 
-//заменяет пробелы на тире в offers для id формы редактирования
 const replaceSpaceInName = (string) => {
   const relaceSymbol = /\s+/g;
   return string.replace(relaceSymbol, '-');
@@ -84,7 +80,4 @@ const sortByTime = (eventA, eventB) => {
   return eventBDuration - eventADuration;
 };
 
-//проверка дата изменена в форме редактирования
-const isDatesChange = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
-
-export { capitalizeLetter, humanizeEventDueDate, getDuration, isEscapeKey, filter, replaceSpaceInName, sortByDay, sortByPrice, sortByTime, isDatesChange };
+export { capitalizeLetter, humanizeEventDueDate, getDuration, isEscapeKey, filter, replaceSpaceInName, sortByDay, sortByPrice, sortByTime, isMinoreUpdate };
