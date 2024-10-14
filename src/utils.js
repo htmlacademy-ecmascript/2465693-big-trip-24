@@ -80,6 +80,4 @@ const sortByTime = (eventA, eventB) => {
   return eventBDuration - eventADuration;
 };
 
-const isDatesChange = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
-
-export { capitalizeLetter, humanizeEventDueDate, getDuration, isEscapeKey, filter, replaceSpaceInName, sortByDay, sortByPrice, sortByTime, isDatesChange, isMinoreUpdate };
+export { capitalizeLetter, humanizeEventDueDate, getDuration, isEscapeKey, filter, replaceSpaceInName, sortByDay, sortByPrice, sortByTime, isMinoreUpdate };
