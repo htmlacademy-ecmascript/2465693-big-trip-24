@@ -5,27 +5,31 @@ const capitalizeLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
 const humanizeEventDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
+const durationEvent = (days, hours, minutes) => {
+  let result = '';
+
+  if (days > 0) {
+    result += `${days.toString().padStart(2, '0')}D `;
+  }
+
+  if ((hours >= 0) & (days >= 0)) {
+    result += `${hours.toString().padStart(2, '0')}H `;
+  }
+
+  if (minutes >= 0 || (days === 0 && hours === 0)) {
+    result += `${minutes.toString().padStart(2, '0')}M `;
+  }
+  return result;
+};
+
 const getDuration = (dateBegin, dateEnd) => {
   const durationInMinutes = dayjs(dateEnd).diff(dateBegin, 'm');
   const days = Math.floor(durationInMinutes / (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR));
   const hours = Math.floor((durationInMinutes % (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR)) / TimeConverter.MINUTES_IN_HOUR);
   const minutes = durationInMinutes % TimeConverter.MINUTES_IN_HOUR;
-
-  let durationResult = '';
-
-  if (days > 0) {
-    durationResult += `${days.toString().padStart(2, '0')}D `;
-  }
-
-  if ((hours >= 0) & (days >= 0)) {
-    durationResult += `${hours.toString().padStart(2, '0')}H `;
-  }
-
-  if (minutes >= 0 || (days === 0 && hours === 0)) {
-    durationResult += `${minutes.toString().padStart(2, '0')}M `;
-  }
-
-  return durationResult;
+  // eslint-disable-next-line no-console
+  console.log(durationEvent(days, hours, minutes));
+  return durationEvent(days, hours, minutes);
 };
 
 const isMinoreUpdate = (point, updatePoint) =>

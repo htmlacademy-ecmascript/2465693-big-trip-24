@@ -35,7 +35,6 @@ const createNewFormViewTemplate = (state, destinations, offers, typeOffers) => {
 };
 
 export default class FormCreateView extends AbstractStatefulView {
-  #eventPoint = null;
   #allDestinations = [];
   #offers = [];
   #typeOffers = [];
@@ -48,7 +47,6 @@ export default class FormCreateView extends AbstractStatefulView {
 
   constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onCancelClick }) {
     super();
-    this.#eventPoint = eventPoint;
     this._setState(FormCreateView.parsePointToState(eventPoint));
     this.#allDestinations = allDestinations;
     this.#offers = offers;

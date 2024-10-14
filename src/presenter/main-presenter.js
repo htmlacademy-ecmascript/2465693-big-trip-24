@@ -79,41 +79,6 @@ export default class MainPresenter {
     }
   }
 
-  #renderSort() {
-    this.#sortComponent = new SortView({
-      checkedSortType: this.#currentSortType,
-      onSortTypeChange: this.#handleSortTypeChange,
-    });
-
-    render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderMessage() {
-    this.#messageComponent = new MessageView({
-      filterType: this.#filterType,
-    });
-    render(this.#messageComponent, this.#eventsContainer);
-  }
-
-  #renderError() {
-    this.#messageComponent = new MessageView({
-      filterType: 'ERROR',
-    });
-    render(this.#messageComponent, this.#eventsContainer);
-  }
-
-  #renderEventPoint(eventPointItem) {
-    const eventPresenter = new EventPresenter({
-      container: this.#eventsList.element,
-      offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange,
-    });
-    eventPresenter.init(eventPointItem);
-    this.#eventPresenter.set(eventPointItem.id, eventPresenter);
-  }
-
   #handleModeChange = () => {
     this.#newEventPresenter.destroy();
     this.#eventPresenter.forEach((presenter) => presenter.resetView());
@@ -207,6 +172,41 @@ export default class MainPresenter {
       this.#renderMessage();
     }
   };
+
+  #renderSort() {
+    this.#sortComponent = new SortView({
+      checkedSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange,
+    });
+
+    render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderMessage() {
+    this.#messageComponent = new MessageView({
+      filterType: this.#filterType,
+    });
+    render(this.#messageComponent, this.#eventsContainer);
+  }
+
+  #renderError() {
+    this.#messageComponent = new MessageView({
+      filterType: 'ERROR',
+    });
+    render(this.#messageComponent, this.#eventsContainer);
+  }
+
+  #renderEventPoint(eventPointItem) {
+    const eventPresenter = new EventPresenter({
+      container: this.#eventsList.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+    });
+    eventPresenter.init(eventPointItem);
+    this.#eventPresenter.set(eventPointItem.id, eventPresenter);
+  }
 
   #renderEventPoints(eventPoints) {
     eventPoints.forEach((eventPoint) => this.#renderEventPoint(eventPoint));
