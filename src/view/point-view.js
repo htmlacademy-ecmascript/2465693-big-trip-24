@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { DateFormat } from '../const.js';
 import { humanizeEventDueDate, getDuration } from '../utils.js';
 
-const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
+const createNewPointTemplate = (eventPoint, destination, offers) => {
   const { basePrice, dateFrom, dateTo, isFavorite, type } = eventPoint;
   const isFavoriteClass = isFavorite ? 'event__favorite-btn--active' : '';
   const durationEvent = getDuration(dateFrom, dateTo);
@@ -51,7 +51,7 @@ const createNewLocationPointTemplate = (eventPoint, destination, offers) => {
 </div>
 </li>`;
 };
-export default class LocationPointView extends AbstractView {
+export default class PointView extends AbstractView {
   #eventPoint = null;
   #destination = null;
   #offers = null;
@@ -69,7 +69,7 @@ export default class LocationPointView extends AbstractView {
   }
 
   get template() {
-    return createNewLocationPointTemplate(this.#eventPoint, this.#destination, this.#offers);
+    return createNewPointTemplate(this.#eventPoint, this.#destination, this.#offers);
   }
 
   #EditButtonClickHandler = (evt) => {

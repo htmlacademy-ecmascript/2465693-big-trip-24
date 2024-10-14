@@ -6,6 +6,10 @@ export default class OffersModel {
     this.#service = service;
   }
 
+  get offers() {
+    return this.#offers;
+  }
+
   async init() {
     try {
       const offers = await this.#service.offers;
@@ -15,16 +19,12 @@ export default class OffersModel {
     }
   }
 
-  get offers() {
-    return this.#offers;
-  }
-
   getOffersType() {
     const availableOffers = this.offers;
     const typeOffers = [];
-    for (let i = 0; i < availableOffers.length; i++) {
-      typeOffers.push(availableOffers[i].type);
-    }
+    availableOffers.forEach((item) => {
+      typeOffers.push(item.type);
+    });
     return typeOffers;
   }
 

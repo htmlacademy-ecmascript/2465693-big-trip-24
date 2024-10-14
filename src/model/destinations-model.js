@@ -6,6 +6,10 @@ export default class DestinationsModel {
     this.#service = service;
   }
 
+  get destinations() {
+    return this.#destinations;
+  }
+
   async init() {
     try {
       const destinations = await this.#service.destinations;
@@ -13,10 +17,6 @@ export default class DestinationsModel {
     } catch (err) {
       this.#destinations = [];
     }
-  }
-
-  get destinations() {
-    return this.#destinations;
   }
 
   getDestinationsById(id) {

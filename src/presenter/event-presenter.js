@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render.js';
 import FormEditView from '../view/form-edit-view.js';
-import LocationPointView from '../view/location-point-view.js';
+import PointView from '../view/point-view.js';
 import { UpdateType, UserAction } from '../const.js';
 import { isEscapeKey, isMinoreUpdate } from '../utils.js';
 
@@ -34,23 +34,23 @@ export default class EventPresenter {
     const prevEventPointComponent = this.#eventPoint;
     const prevEditEventPointComponent = this.#editEventPoint;
 
-    this.#eventPoint = new LocationPointView({
+    this.#eventPoint = new PointView({
       eventPoint: this.#eventPointItem,
       destination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
       offers: [...this.#offersModel.getOffersById(eventPointItem.type, eventPointItem.offers)],
-      onEditButtonClick: this.#onEditButtonClick,
-      onFavoriteClick: this.#onFavoriteClick,
+      onEditButtonClick: this.#editClickHandler,
+      onFavoriteClick: this.#favoriteClickHandler,
     });
 
     this.#editEventPoint = new FormEditView({
       eventPoint: this.#eventPointItem,
       pointDestination: this.#destinationsModel.getDestinationsById(eventPointItem.destination),
-      allDestinations: this.#destinationsModel.destinations,
+      destinations: this.#destinationsModel.destinations,
       offers: this.#offersModel.offers,
       typeOffers: this.#offersModel.getOffersType(),
-      onFormSubmit: this.#onFormSubmit,
-      onRollupButtonClick: this.#onRollupButtonClick,
-      onDeleteClick: this.#onDeleteClick,
+      onFormSubmit: this.#formSubmitHandler,
+      onRollupButtonClick: this.#rollupButtonClickHandler,
+      onDeleteClick: this.#deleteClickHandler,
     });
 
     if (prevEventPointComponent === null || prevEditEventPointComponent === null) {
@@ -118,24 +118,6 @@ export default class EventPresenter {
     this.#editEventPoint.shake(resetFormState);
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      this.#editEventPoint.reset(this.#eventPointItem);
-      this.#replaceEditToView();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
-  #onEditButtonClick = () => {
-    this.#replaceViewToEdit();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #onFavoriteClick = () => {
-    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
-  };
-
   #replaceViewToEdit = () => {
     replace(this.#editEventPoint, this.#eventPoint);
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -149,18 +131,36 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  #onRollupButtonClick = (eventPointItem) => {
+  #escKeyDownHandler = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      this.#editEventPoint.reset(this.#eventPointItem);
+      this.#replaceEditToView();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
+
+  #editClickHandler = () => {
+    this.#replaceViewToEdit();
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #favoriteClickHandler = () => {
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#eventPointItem, isFavorite: !this.#eventPointItem.isFavorite });
+  };
+
+  #rollupButtonClickHandler = (eventPointItem) => {
     this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, eventPointItem);
     this.#replaceEditToView();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #onFormSubmit = (update) => {
+  #formSubmitHandler = (update) => {
     const neccesaryUpdateType = isMinoreUpdate(this.#eventPointItem, update) ? UpdateType.MINOR : UpdateType.PATCH;
     this.#handleDataChange(UserAction.UPDATE_POINT, neccesaryUpdateType, update);
   };
 
-  #onDeleteClick = (eventPointItem) => {
+  #deleteClickHandler = (eventPointItem) => {
     this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.MINOR, eventPointItem);
   };
 }

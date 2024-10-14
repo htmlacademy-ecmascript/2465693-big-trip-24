@@ -38,7 +38,7 @@ const createNewFormEditViewTemplate = (state, destinations, offers, typeOffers) 
 
 export default class FormEditView extends AbstractStatefulView {
   #originalPoint = null;
-  #allDestinations = [];
+  #destinations = [];
   #offers = [];
   #typeOffers = [];
   #datepickerStart = null;
@@ -48,11 +48,11 @@ export default class FormEditView extends AbstractStatefulView {
   #handleRollupButtonClick = null;
   #handleDeleteClick = null;
 
-  constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onRollupButtonClick, onDeleteClick }) {
+  constructor({ eventPoint, destinations, offers, typeOffers, onFormSubmit, onRollupButtonClick, onDeleteClick }) {
     super();
     this.#originalPoint = eventPoint;
     this._setState(FormEditView.parsePointToState(eventPoint));
-    this.#allDestinations = allDestinations;
+    this.#destinations = destinations;
     this.#offers = offers;
     this.#typeOffers = typeOffers;
     this.#handleFormSubmit = onFormSubmit;
@@ -62,7 +62,7 @@ export default class FormEditView extends AbstractStatefulView {
   }
 
   get template() {
-    return createNewFormEditViewTemplate(this._state, this.#allDestinations, this.#offers, this.#typeOffers);
+    return createNewFormEditViewTemplate(this._state, this.#destinations, this.#offers, this.#typeOffers);
   }
 
   reset(eventPoint) {
@@ -110,7 +110,7 @@ export default class FormEditView extends AbstractStatefulView {
   };
 
   #destinationOptionHandler = (evt) => {
-    const selectedDestination = this.#allDestinations.find((item) => item.name === evt.target.value);
+    const selectedDestination = this.#destinations.find((item) => item.name === evt.target.value);
     const selectedDestinationId = selectedDestination ? selectedDestination.id : null;
     this.updateElement({ destination: selectedDestinationId });
   };

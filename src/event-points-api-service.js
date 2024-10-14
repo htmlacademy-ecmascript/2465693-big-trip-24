@@ -29,7 +29,6 @@ export default class EventPointsApiService extends ApiService {
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
-
     return parsedResponse;
   }
 
@@ -42,7 +41,6 @@ export default class EventPointsApiService extends ApiService {
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
-
     return parsedResponse;
   }
 
