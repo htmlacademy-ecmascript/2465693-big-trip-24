@@ -112,15 +112,7 @@ const createSectionOffersTemplate = (state, offers, isDisabled) => {
     : '';
 };
 
-const createPictureTemplate = (pictures) =>
-  pictures
-    .map(
-      (picture) =>
-        `
-    <img class="event__photo" src="${picture.src}" alt="${picture.description}">
-    `
-    )
-    .join('');
+const createPictureTemplate = (pictures) => pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
 
 const createSectionDestinationTemplate = (destination) => {
   if (destination === undefined || destination.description === '') {
@@ -133,8 +125,7 @@ const createSectionDestinationTemplate = (destination) => {
     <p class="event__destination-description">${destination !== undefined ? destination.description : ''}</p>
 ${
   destination.pictures.length
-    ? `
-      <div class="event__photos-container">
+    ? `<div class="event__photos-container">
         <div class="event__photos-tape">
         ${createPictureTemplate(destination !== undefined ? destination.pictures : '')}
         </div>

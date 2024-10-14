@@ -5,6 +5,7 @@ import { sortByDay, humanizeEventDueDate } from '../utils';
 const getDestinationRoute = (eventPoints, destinations) => {
   const sortedEventPoints = [...eventPoints.sort(sortByDay)];
   const destinationIds = sortedEventPoints.map((eventPoint) => eventPoint.destination);
+
   const destinationsRoute = destinationIds.map((id) => {
     const destinationRoute = destinations.find((destination) => destination.id === id);
     return destinationRoute ? destinationRoute.name : '';

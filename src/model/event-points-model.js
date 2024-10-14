@@ -13,6 +13,10 @@ export default class EventPointsModel extends Observable {
     this.#destinationsModel = destinayionsModel;
   }
 
+  get eventPoints() {
+    return this.#eventPoints;
+  }
+
   async init() {
     try {
       await Promise.all([this.#destinationsModel.init(), this.#offersModel.init()]);
@@ -23,10 +27,6 @@ export default class EventPointsModel extends Observable {
       this.#eventPoints = [];
       this._notify(UpdateType.ERROR);
     }
-  }
-
-  get eventPoints() {
-    return this.#eventPoints;
   }
 
   async updatePoint(updateType, update) {

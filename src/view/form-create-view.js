@@ -35,7 +35,7 @@ const createNewFormViewTemplate = (state, destinations, offers, typeOffers) => {
 };
 
 export default class FormCreateView extends AbstractStatefulView {
-  #allDestinations = [];
+  #destinations = [];
   #offers = [];
   #typeOffers = [];
 
@@ -45,10 +45,10 @@ export default class FormCreateView extends AbstractStatefulView {
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor({ eventPoint, allDestinations, offers, typeOffers, onFormSubmit, onCancelClick }) {
+  constructor({ eventPoint, destinations, offers, typeOffers, onFormSubmit, onCancelClick }) {
     super();
     this._setState(FormCreateView.parsePointToState(eventPoint));
-    this.#allDestinations = allDestinations;
+    this.#destinations = destinations;
     this.#offers = offers;
     this.#typeOffers = typeOffers;
     this.#handleFormSubmit = onFormSubmit;
@@ -57,10 +57,9 @@ export default class FormCreateView extends AbstractStatefulView {
   }
 
   get template() {
-    return createNewFormViewTemplate(this._state, this.#allDestinations, this.#offers, this.#typeOffers);
+    return createNewFormViewTemplate(this._state, this.#destinations, this.#offers, this.#typeOffers);
   }
 
-  //перегружаем метод родителя, чтобы при удалении удалялся более не нужный календарь
   removeElement() {
     super.removeElement();
 
@@ -75,7 +74,6 @@ export default class FormCreateView extends AbstractStatefulView {
     }
   }
 
-  //метод для восстановления обработчиков
   _restoreHandlers() {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeOptionHandler);
@@ -103,7 +101,7 @@ export default class FormCreateView extends AbstractStatefulView {
   };
 
   #destinationOptionHandler = (evt) => {
-    const selectedDestination = this.#allDestinations.find((item) => item.name === evt.target.value);
+    const selectedDestination = this.#destinations.find((item) => item.name === evt.target.value);
     const selectedDestinationId = selectedDestination ? selectedDestination.id : null;
     this.updateElement({ destination: selectedDestinationId });
   };
@@ -133,11 +131,11 @@ export default class FormCreateView extends AbstractStatefulView {
 
   #setDatepickerStart() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time-1'), {
-      dateFormat: 'd/m/y H:i', //формат даты
-      enableTime: true, //будет доступно задание времени
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
       // eslint-disable-next-line camelcase
-      time_24hr: true, //формат времени
-      defaultDate: this._state.dateFrom, //стартовая дата
+      time_24hr: true,
+      defaultDate: this._state.dateFrom,
       onChange: this.#dateFromChangeHandler,
     });
   }
@@ -150,11 +148,10 @@ export default class FormCreateView extends AbstractStatefulView {
       time_24hr: true,
       defaultDate: this._state.dateTo,
       onChange: this.#dateToChangeHandler,
-      minDate: this._state.dateFrom, //дата, раньше которой нельзя выбрать дату
+      minDate: this._state.dateFrom,
     });
   }
 
-  //метод конвертации, "обогащаем" двумя новыми элементами id и isChecked
   static parsePointToState(eventPoint) {
     eventPoint.offers.forEach((offer) => {
       offer.isChecked = false;
