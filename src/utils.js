@@ -1,21 +1,14 @@
-import { TimeConverter } from './const.js';
+import { FilterType, TimeConverter } from './const.js';
 import dayjs from 'dayjs';
-import { FilterType } from './const.js';
 
-//Функция возвращающая слово с заглавной буквы
 const capitalizeLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
-//офрматирование даты
 const humanizeEventDueDate = (dueDate, dateFormat) => (dueDate && dateFormat ? dayjs(dueDate).format(dateFormat) : '');
 
 const getDuration = (dateBegin, dateEnd) => {
-  //вычисляем разницу в минутах
   const durationInMinutes = dayjs(dateEnd).diff(dateBegin, 'm');
-  //вычисляем число дней
   const days = Math.floor(durationInMinutes / (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR));
-  //вычисляем часы
   const hours = Math.floor((durationInMinutes % (TimeConverter.HOURS_IN_DAY * TimeConverter.MINUTES_IN_HOUR)) / TimeConverter.MINUTES_IN_HOUR);
-  //вычисляем минуты
   const minutes = durationInMinutes % TimeConverter.MINUTES_IN_HOUR;
 
   let durationResult = '';

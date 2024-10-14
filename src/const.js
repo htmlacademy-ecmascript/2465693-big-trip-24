@@ -26,7 +26,7 @@ const SortType = {
   OFFERS: 'offers',
 };
 
-const availableSortType = {
+const AvailableSortType = {
   [SortType.DAY]: true,
   [SortType.EVENT]: false,
   [SortType.TIME]: true,
@@ -79,7 +79,7 @@ const TRIP_DESTINATION_COUNT = 3;
 
 export {
   SortType,
-  availableSortType,
+  AvailableSortType,
   DateFormat,
   TimeConverter,
   MessageText,
