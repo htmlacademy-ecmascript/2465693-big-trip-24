@@ -1,12 +1,11 @@
-import TripInfoView from '../view/trip-info-view.js';
 import { render, replace, remove, RenderPosition } from '../framework/render.js';
+import TripInfoView from '../view/trip-info-view.js';
 
 export default class TripInfoPresenter {
   #eventPointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
   #mainContainer = null;
-
   #tripInfoComponent = null;
 
   constructor(eventPointsModel, destinatinationsModel, offersModel, mainContainer) {

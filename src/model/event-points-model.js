@@ -13,30 +13,25 @@ export default class EventPointsModel extends Observable {
     this.#destinationsModel = destinayionsModel;
   }
 
-  //метод Init, запрос на получение данных
   async init() {
     try {
       await Promise.all([this.#destinationsModel.init(), this.#offersModel.init()]);
-      const eventPoints = await this.#service.eventPoints; //получаем список событий
-      this.#eventPoints = eventPoints.map(this.#adaptToClient); //преобразование задач к нужному виду, применяя адаптер
+      const eventPoints = await this.#service.eventPoints;
+      this.#eventPoints = eventPoints.map(this.#adaptToClient);
       this._notify(UpdateType.INIT);
     } catch (err) {
       this.#eventPoints = [];
       this._notify(UpdateType.ERROR);
     }
-    //уведомляет, что модель обновилась
   }
 
   get eventPoints() {
     return this.#eventPoints;
   }
 
-  //метод обновления точки события
   async updatePoint(updateType, update) {
     const index = this.#eventPoints.findIndex((eventPoint) => eventPoint.id === update.id);
 
-    //если сбоите не нашлось то выводим
-    //!~index аналог index === -1
     if (!~index) {
       throw new Error('Can not update unexisting point');
     }
@@ -45,14 +40,12 @@ export default class EventPointsModel extends Observable {
       const response = await this.#service.updatePoint(update);
       const updatePoint = this.#adaptToClient(response);
       this.#eventPoints = [...this.#eventPoints.slice(0, index), updatePoint, ...this.#eventPoints.slice(index + 1)];
-      //уведомляем всех подписчиков о случившемся событии
       this._notify(updateType, updatePoint);
     } catch (err) {
       throw new Error('Can not update point');
     }
   }
 
-  //метод добавления новой точки события
   async addPoint(updateType, update) {
     try {
       const response = await this.#service.addPoint(update);
@@ -64,11 +57,9 @@ export default class EventPointsModel extends Observable {
     }
   }
 
-  //метод удаления точки события
   async deletePoint(updateType, update) {
     const index = this.#eventPoints.findIndex((eventPoint) => eventPoint.id === update.id);
 
-    //!~index аналог index === -1
     if (!~index) {
       throw new Error('Can not delete unexisting point');
     }
@@ -82,17 +73,15 @@ export default class EventPointsModel extends Observable {
     }
   }
 
-  //адаптируем данные c сервера snake_case TO camelCase
   #adaptToClient(eventPoint) {
     const adaptedEventPoint = {
       ...eventPoint,
-      dateFrom: eventPoint['date_from'] !== null ? new Date(eventPoint['date_from']) : eventPoint['date_from'], // На клиенте дата хранится как экземпляр Date
+      dateFrom: eventPoint['date_from'] !== null ? new Date(eventPoint['date_from']) : eventPoint['date_from'],
       dateTo: eventPoint['date_to'] !== null ? new Date(eventPoint['date_to']) : eventPoint['date_to'],
       basePrice: eventPoint['base_price'],
       isFavorite: eventPoint['is_favorite'],
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedEventPoint['date_from'];
     delete adaptedEventPoint['date_to'];
     delete adaptedEventPoint['base_price'];

@@ -2,7 +2,6 @@ import { capitalizeLetter, humanizeEventDueDate, replaceSpaceInName } from '../u
 import { DateFormat } from '../const.js';
 import he from 'he';
 
-//выбор типа события
 const createTypeItemTemplate = (type, isCheckedTypeClassName) => `
   <div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isCheckedTypeClassName}>
@@ -34,7 +33,6 @@ const createEventTypeTemplate = (type, typeOffers, isDisabled) => {
     </div>`;
 };
 
-//выбор точки события
 function createAvailableDestinationTemplateName(destinations, isDisabled) {
   return destinations.map((destination) => `<option value="${destination.name}" ${isDisabled ? 'disabled' : ''}></option>`).join('');
 }
@@ -54,7 +52,6 @@ const createDestinationTemplate = (type, destination, destinations, isDisabled) 
     </datalist>
   </div>`;
 
-//выбор даты
 const eventTime = (eventDate) => humanizeEventDueDate(eventDate, DateFormat.EDIT_DATE);
 
 const createDateTimeTemplate = (dateFrom, dateTo, isDisabled) => `
@@ -68,7 +65,6 @@ const createDateTimeTemplate = (dateFrom, dateTo, isDisabled) => `
     <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${eventTime(dateTo)}" ${isDisabled ? 'disabled' : ''} required>
   </div>`;
 
-//выбор цены
 const createPriceTemplate = (basePrice, isDisabled) => `
   <div class="event__field-group  event__field-group--price">
     <label class="event__label" for="event-price-1">
@@ -81,7 +77,6 @@ const createPriceTemplate = (basePrice, isDisabled) => `
     value="${he.encode(String(basePrice))}" onkeyup="this.value = this.value.replace(/[^0-9]/g,'');" ${isDisabled ? 'disabled' : ''} required>
   </div>`;
 
-//секция офферов соответствующих типу события
 const createOfferItemTemplate = (type, title, price, id, className, isDisabled) => `
   <div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden"
@@ -117,7 +112,6 @@ const createSectionOffersTemplate = (state, offers, isDisabled) => {
     : '';
 };
 
-//секция мест назначения
 const createPictureTemplate = (pictures) =>
   pictures
     .map(

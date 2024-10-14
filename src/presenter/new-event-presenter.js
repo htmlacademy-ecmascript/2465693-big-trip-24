@@ -1,5 +1,5 @@
-import FormCreateView from '../view/form-create-view.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
+import FormCreateView from '../view/form-create-view.js';
 import { UpdateType, UserAction, NEW_POINT } from '../const.js';
 import { isEscapeKey } from '../utils.js';
 export default class NewEventPresenter {
@@ -73,7 +73,7 @@ export default class NewEventPresenter {
   }
 
   #handleFormSubmit = (eventPoint) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint); //**** */
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, eventPoint);
   };
 
   #handleCancelClick = () => {
