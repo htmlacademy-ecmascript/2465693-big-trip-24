@@ -65,7 +65,6 @@ export default class NewEventPresenter {
       this.#addComponent.updateElement({
         isDisabled: false,
         isSaving: false,
-        isDeleting: false,
       });
     };
 
